@@ -3,6 +3,8 @@ from snlp.evaluation.metrics import evaluate_model
 from snlp.filtering.eval_filtering import predict_dataframe
 from matplotlib import pyplot as plt
 import pandas as pd
+import json
+import os
 
 
 def evaluation(path_to_testfile, path_to_model, path_to_cfx):
@@ -18,11 +20,15 @@ def evaluation(path_to_testfile, path_to_model, path_to_cfx):
 
 
 if __name__ == "__main__":
-    
-    evaluation(path_to_testfile='./tmp-amazon/test.tsv',
-               path_to_model='./tmp-amazon/classifier',
-               path_to_cfx='./tmp-amazon/confusion_matrix.png')
 
-    evaluation(path_to_testfile='./tmp-amazon/test_repl.tsv',
-               path_to_model='./tmp-amazon/classifier_repl',
-               path_to_cfx='./tmp-amazon/confusion_matrix_repl.png')
+
+    with open("config/amazon_reviews.json") as json_file:
+        config = json.load(json_file)
+    
+    evaluation(path_to_testfile=os.path.join(config['amazon']['test_test_dir'], 'test.tsv'),
+               path_to_model=os.path.join(config['amazon']['test_test_dir'], 'classifier'),
+               path_to_cfx=os.path.join(config['amazon']['test_test_dir'], 'confusion_matrix.png'))
+
+    evaluation(path_to_testfile=os.path.join(config['amazon']['test_test_dir'], 'test_repl.tsv'),
+               path_to_model=os.path.join(config['amazon']['test_test_dir'], 'classifier_repl'),
+               path_to_cfx=os.path.join(config['amazon']['test_test_dir'], 'confusion_matrix_repl.png'))

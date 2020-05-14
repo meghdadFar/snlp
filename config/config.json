@@ -1,0 +1,12 @@
+{
+	"config1": {
+		"int1": 2,
+		"string1": "xyz",
+		"bool1": true
+	},
+	"config1": {
+        "int2": 2,
+		"string2": "xyz",
+		"bool2": true
+    }
+}

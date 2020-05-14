@@ -89,6 +89,7 @@ def calculate_pmi(nn_dict, word_dic, N_compounds, N_words):
     nn_dict = sorted(nn_dict.items(), key=lambda e: e[1][1], reverse=True)
     return nn_dict
 
+
 def get_counts(df, text_column, output_dir):
     """Reads a corpus in df (pd.DataFrame) and generates all counts necessary for calculating AMs.
 
@@ -98,7 +99,6 @@ def get_counts(df, text_column, output_dir):
     Returns:
         0 (int): If count files are successfully stored in the specified path. 
     """
-
     NNs_total = {}
     JNs_total = {}
     W_total = {}
@@ -165,9 +165,7 @@ def get_ams(path_to_counts, ams=['pmi']):
         
         Returns:
             0
-
         """
-
         f = open(os.path.join(path_to_counts, 'w_count.txt'))
         v = f.read()
         w_count = int(v)
