@@ -133,3 +133,5 @@ dmypy.json
 
 # Current
 tmp* 
+venv3/
+venv*
