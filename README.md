@@ -1,6 +1,6 @@
 # snlp
 
-[![HitCount](http://hits.dwyl.com/meghdadFar/en_ncs_noncompositional_conventionalized.svg)](http://hits.dwyl.com/meghdadFar/en_ncs_noncompositional_conventionalized)
+[![HitCount](http://hits.dwyl.com/meghdadFar/snlp.svg)](http://hits.dwyl.com/meghdadFar/snlp)
 
 Statistical NLP (SNLP): A practical package to improve the performacne of downstream Deep Learning or Machine Learning-based NLP models. SNLP is based on statistical and distributional attributes of natural language and hence most of the functionalities are unsupervised.
 
