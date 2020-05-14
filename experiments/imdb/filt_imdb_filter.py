@@ -1,5 +1,6 @@
 import os
 import traceback
+import json
 
 from tqdm import tqdm
 from snlp.data_processing.processing import clean_dataset, create_filterset_map, create_filterset
@@ -74,26 +75,28 @@ def run_cleaning_set(raw_home, output_home, filterset, regex_pattern):
 
 if __name__ == "__main__":
 
-
-    raw_dir = 'tmp'
-    output_dir = 'tmp3'
-    prefix = 'imdb'
     zs = [3, 4, 5]
     regex_pattern = '^[a-zA-Z0-9!.?/]+$'
     method = 'manual'
 
-    if method == 'automatic':
-        print('Creating zscore-based filtersets...')
-        z_map = create_filterset_map(os.path.join(raw_dir, prefix+'_train.tsv'), 
-                            output_dir=output_dir, 
-                            zs=zs)
-        print('Cleaning sets...')
-        run_cleaning_map(raw_dir, output_dir, z_map, regex_pattern)
 
-    elif method == 'manual':
+    with open("config/imdb_reviews.json") as json_file:
+        config = json.load(json_file)
+
+
+    if config['imdb']['filtering_method'] == 'automatic':
+        print('Creating zscore-based filtersets...')
+        z_map = create_filterset_map(os.path.join(config['imdb']['out_dir'], 'imdb_train.tsv'), 
+                            output_dir=config['imdb']['out_dir'], 
+                            zs=zs)
+        
+        print('Cleaning sets...')
+        run_cleaning_map(config['imdb']['out_dir'], config['imdb']['out_dir'], z_map, regex_pattern)
+
+    elif config['imdb']['filtering_method'] == 'manual':
 
         print('Creating manual filtersets...')
-        filter_set = create_filterset(os.path.join(raw_dir, prefix+'_train.tsv'), 
-                            output_dir=output_dir)
+        filter_set = create_filterset(os.path.join(config['imdb']['out_dir'], 'imdb_train.tsv'), 
+                            output_dir=config['imdb']['out_dir'])
         print('Cleaning sets...')
-        run_cleaning_set(raw_dir, output_dir, filter_set, regex_pattern)
+        run_cleaning_set(config['imdb']['out_dir'], config['imdb']['out_dir'], filter_set, regex_pattern)

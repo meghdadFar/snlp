@@ -1,10 +1,13 @@
 
 import os
 import sys
+import json
 
 import pandas as pd
 from fasttext import load_model
 
+from snlp.data_processing.processing import predict_dataframe
+from snlp.evaluation.metrics import evaluate_model
 
 
 def evaluate_models(input_dir, model_dir):
@@ -41,5 +44,9 @@ def evaluate_models(input_dir, model_dir):
 
 if __name__ == "__main__":
 
-    output_dir = 'tmp3'
-    evaluate_models(output_dir, output_dir)
+    with open("config/imdb_reviews.json") as json_file:
+        config = json.load(json_file)
+
+
+    print('Training models...')
+    evaluate_models(config['imdb']['out_dir'], config['imdb']['out_dir'])

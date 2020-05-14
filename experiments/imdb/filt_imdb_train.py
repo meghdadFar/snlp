@@ -1,4 +1,7 @@
 import os
+import sys
+import json
+
 from fasttext import train_supervised
 
 
@@ -32,13 +35,9 @@ def train_models(input_dir, output_dir):
 
 if __name__ == "__main__":
 
+    with open("config/imdb_reviews.json") as json_file:
+        config = json.load(json_file)
 
-    raw_dir = 'tmp'
-    output_dir = 'tmp3'
-    prefix = 'imdb'
-    zs = [3, 4, 5]
-    regex_pattern = '^[a-zA-Z0-9!.?/]+$'
-    method = 'manual'
 
     print('Training models...')
-    train_models(output_dir, output_dir)
+    train_models(config['imdb']['out_dir'], config['imdb']['out_dir'])

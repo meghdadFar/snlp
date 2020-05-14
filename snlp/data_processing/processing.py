@@ -19,7 +19,7 @@ from tqdm import tqdm
 from os import listdir
 
 
-def data_to_dataframe(ds, df_path):
+def dataset_to_corpus(ds, df_path):
     """Create corpus from torchtext dataset.
     
     Args:
@@ -36,7 +36,7 @@ def data_to_dataframe(ds, df_path):
             L.write('__label__'+te.label + '\t' + ' '.join(te.text)+'\n')
 
 
-def prepare_raw_data(input_dir, prefix, seq_length):
+def prepare_imdb_data(output_dir, seq_length):
     """Loads the raw data train and test splits, lowers case, tokenizes and saves them as tsv. 
 
     """
@@ -49,8 +49,8 @@ def prepare_raw_data(input_dir, prefix, seq_length):
     print('Number of train examples: %d' %len(train_ds))
     print('Number of test examples: %d' %len(test_ds))
 
-    data_to_dataframe(train_ds, os.path.join(input_dir, prefix + '_train.tsv'))
-    data_to_dataframe(test_ds, os.path.join(input_dir, prefix + '_test.tsv'))
+    dataset_to_corpus(train_ds, os.path.join(output_dir, 'imdb_train.tsv'))
+    dataset_to_corpus(test_ds, os.path.join(output_dir, 'imdb_test.tsv'))
 
 
 def clean_dataset(path_to_input, path_to_output, regex_pattern='.*', filter_set=None):
