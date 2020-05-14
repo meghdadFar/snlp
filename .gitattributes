@@ -1,0 +1,3 @@
+# To force identification of the right language, ignore all files, then just look at .py files.
+* linguist-vendored
+*.py linguist-vendored=false
