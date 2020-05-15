@@ -1,6 +1,5 @@
 from fasttext import train_supervised, load_model
 from snlp.evaluation.metrics import evaluate_model
-from snlp.filtering.eval_filtering import predict_dataframe
 from matplotlib import pyplot as plt
 import pandas as pd
 import json

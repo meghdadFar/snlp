@@ -1,10 +1,11 @@
-from fasttext import train_supervised, load_model
-from snlp.evaluation.metrics import evaluate_model
-from snlp.filtering.eval_filtering import predict_dataframe
-from matplotlib import pyplot as plt
 import pandas as pd
 import json
 import os
+
+from fasttext import train_supervised, load_model
+from snlp.evaluation.metrics import evaluate_model
+from snlp.data_processing.processing import predict_dataframe
+from matplotlib import pyplot as plt
 
 
 def evaluation(path_to_testfile, path_to_model, path_to_cfx):
@@ -20,7 +21,6 @@ def evaluation(path_to_testfile, path_to_model, path_to_cfx):
 
 
 if __name__ == "__main__":
-
 
     with open("config/amazon_reviews.json") as json_file:
         config = json.load(json_file)

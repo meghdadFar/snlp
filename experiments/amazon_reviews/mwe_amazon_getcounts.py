@@ -9,4 +9,3 @@ with open("config/amazon_reviews.json") as json_file:
 
 df = pd.read_csv(config["amazon"]["preped_file"], sep='\t')
 get_counts(df, text_column=config["amazon"]["review_body"], output_dir=config["amazon"]["count_dir"])
-
