@@ -47,6 +47,7 @@ mydf.topic = [gen.word() for i in range(10)]
 
 Do some preprocessing:
 
+```
 mydf.text = mydf.text.apply(word_tokenize).apply(lambda x : ' '.join(x)).apply(lambda x : x.lower())
 mydf.topic = mydf.topic.apply( lambda x : x.lower())
 ```
