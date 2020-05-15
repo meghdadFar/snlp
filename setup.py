@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="snlp", # Replace with your own username
-    version="0.0.2",
+    version="0.0.4",
     author="meghdadFar",
     author_email="meghdad.farahmand@gmail.com",
     description="Statistical NLP",

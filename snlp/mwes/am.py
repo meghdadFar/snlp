@@ -164,7 +164,7 @@ def get_ams(path_to_counts, ams=['pmi']):
             ams (list): List of AMs to be calcuated. 
         
         Returns:
-            0
+        
         """
         f = open(os.path.join(path_to_counts, 'w_count.txt'))
         v = f.read()
@@ -204,8 +204,6 @@ def get_ams(path_to_counts, ams=['pmi']):
         
         if 't' in ams:
             print('t is not implemented.')
-        
-        return 0
 
 
     
