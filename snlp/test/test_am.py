@@ -9,11 +9,7 @@ class TestAms(unittest.TestCase):
         self.assertRaises(TypeError, extract_ncs_from_sent, -2)
         self.assertRaises(TypeError, extract_ncs_from_sent, [1, 2, 3])
         self.assertRaises(TypeError, extract_ncs_from_sent, [1, 2, 'test'])
-        
         self.assertRaises(ValueError, extract_ncs_from_sent, '')
-        
-
-
 
 if __name__ == '__main__':
     unittest.main()
