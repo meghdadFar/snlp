@@ -24,6 +24,12 @@ def extract_ncs_from_sent(sentence):
         JNs_counts (dict): Dictionary of adjective-noun compounds to their count in sentence. 
         word_counts (dict) Dictionary of words to their count in sentence. 
     """
+    if not isinstance(sentence, str):
+        raise TypeError('Input must be a string.')
+    
+    if len(sentence) == 0:
+        return
+        
     tokens = sentence.split(" ")
     postag_tokens = nltk.pos_tag(tokens)
     JNs = []
