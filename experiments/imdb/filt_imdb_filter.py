@@ -3,7 +3,7 @@ import traceback
 import json
 
 from tqdm import tqdm
-from snlp.data_processing.processing import clean_dataset, create_filterset_map, create_filterset
+from snlp.data_processing.processing import preprocess_dataset, create_filterset_map, create_filterset
 
 
 
@@ -26,11 +26,11 @@ def run_cleaning_map(raw_home, output_home, z_map, regex_pattern):
         cv_sets = [f for f in os.listdir(raw_home) if os.path.isfile(os.path.join(raw_home, f)) and f.endswith('.tsv')]
         
         for set_name in tqdm(cv_sets):
-            clean_dataset(os.path.join(raw_home, set_name),
+            preprocess_dataset(os.path.join(raw_home, set_name),
                         os.path.join(output_home, 'clean_'+set_name),
                         regex_pattern=regex_pattern)
             for z, filt_words in z_map.items():
-                clean_dataset(os.path.join(raw_home, set_name),
+                preprocess_dataset(os.path.join(raw_home, set_name),
                             os.path.join(output_home, 'clean_filt_z'+str(z)+'_'+set_name),
                             regex_pattern=regex_pattern, filter_set=filt_words)
         return True
@@ -59,11 +59,11 @@ def run_cleaning_set(raw_home, output_home, filterset, regex_pattern):
         cv_sets = [f for f in os.listdir(raw_home) if os.path.isfile(os.path.join(raw_home, f)) and f.endswith('.tsv')]
         
         for set_name in tqdm(cv_sets):
-            clean_dataset(os.path.join(raw_home, set_name),
+            preprocess_dataset(os.path.join(raw_home, set_name),
                         os.path.join(output_home, 'clean_'+set_name),
                         regex_pattern=regex_pattern)
             
-            clean_dataset(os.path.join(raw_home, set_name),
+            preprocess_dataset(os.path.join(raw_home, set_name),
                         os.path.join(output_home, 'clean_filt_manual_'+set_name),
                         regex_pattern=regex_pattern, filter_set=filterset)
         return True

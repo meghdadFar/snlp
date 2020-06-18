@@ -10,11 +10,9 @@ import traceback
 
 from snlp.filtering.filters import WordFilter
 from snlp.evaluation.metrics import evaluate_model
-
-from fasttext import train_supervised, load_model
 from nltk import word_tokenize
-from torchtext import data
-from torchtext import datasets
+from fasttext import train_supervised, load_model
+
 from tqdm import tqdm
 from os import listdir
 
@@ -36,29 +34,12 @@ def dataset_to_corpus(ds, df_path):
             L.write('__label__'+te.label + '\t' + ' '.join(te.text)+'\n')
 
 
-def prepare_imdb_data(output_dir, seq_length):
-    """Loads the raw data train and test splits, lowers case, tokenizes and saves them as tsv. 
-
-    """
-    # Setting up fields
-    TEXT = data.Field(lower=True, tokenize=word_tokenize, fix_length=seq_length)
-    LABEL = data.LabelField(dtype=torch.float)
-
-    # Splitting data
-    train_ds, test_ds = datasets.IMDB.splits(TEXT, LABEL)
-    print('Number of train examples: %d' %len(train_ds))
-    print('Number of test examples: %d' %len(test_ds))
-
-    dataset_to_corpus(train_ds, os.path.join(output_dir, 'imdb_train.tsv'))
-    dataset_to_corpus(test_ds, os.path.join(output_dir, 'imdb_test.tsv'))
-
-
-def clean_dataset(path_to_input, path_to_output, regex_pattern='.*', filter_set=None):
+def preprocess_dataset(path_to_input, path_to_output, regex_pattern, drop, replace, filter_set=None):
     """Remove unwanted patterns (and filter insignificant words). 
     """
     df = pd.read_csv(path_to_input, sep='\t', names=['label', 'text'])
     df.text = df.text.apply(lambda x: x.split(' '))
-    df.text = df.text.apply(clean_text, args=(regex_pattern,))
+    df.text = df.text.apply(clean_text, args=(regex_pattern, drop, replace,))
 
     if filter_set:
         df.text = df.text.apply(lambda x: x.split(' ')) # TODO Also done above; Make more efficient. 
@@ -66,13 +47,13 @@ def clean_dataset(path_to_input, path_to_output, regex_pattern='.*', filter_set=
     df.to_csv(path_to_output, index=False, header=False, sep='\t')
 
 
-def clean_corpus(path_to_input, path_to_output, regex_pattern='.*', filter_set=None):
+def preprocess_textcorpus(path_to_input, path_to_output, regex_pattern, drop, replace, filter_set=None):
     """Remove unwanted patterns (and filter insignificant words) from corpus. 
     """
     with open(path_to_input, 'r') as f:
         lines = f.readlines()    
 
-    lines = [clean_text(l, regex_pattern) for l in lines]
+    lines = [clean_text(l, regex_pattern, drop, replace) for l in lines]
 
     if filter_set:
         lines = [filter_text(l, filter_set) for l in lines]
@@ -82,20 +63,42 @@ def clean_corpus(path_to_input, path_to_output, regex_pattern='.*', filter_set=N
     out_file.close()
     
 
-def clean_text(text, regex_pattern):
-    """ Match the text against allowed pattern. 
+def clean_text(text, regex_pattern, drop, replace, maxlen=15):
+    """ Tokenizes and cleans text, by matching it against regex_pattern and droping and replacing provided patterns. 
     
     Parameters
-    text (list): list of string
+        text (string): Input text.
+        regex_pattern (string): Allowed patterns e.g. [a-zA-Z]
+        drop (set): Set of patterns that should be dropeed from text.
+        replace (dict): Dictionary of pattern --> replacement.
+    
+    Returns:
+        out_text (string): Tokenized and cleaned up text with respect to all above criteria. 
 
     """
-    if not isinstance(text, list):
-        raise TypeError("Input must be a list.")
+    if not isinstance(text, str):
+        raise TypeError("Input must be a string.")
     if len(text) == 0:
-        raise ValueError("Input must be a non empty list.")
+        raise ValueError("Input must be a non empty string.")
     
-    res = ' '.join([t for t in text if (re.match(regex_pattern, t))])
-    return res
+    # Drop unwanted tokens: Replace them with space, then replace resulting \s{2, } with one space
+    for d in drop: # d = e.g. <br/>
+        if re.search(d, text):
+            text = re.sub(d, ' ', text)
+    text = re.sub('\s{2,}', ' ', text)
+
+    for k,v in replace.items():
+        if re.search(k, text):
+            text = re.sub(k , v, text)
+
+    tokens = word_tokenize(text)
+    out_tokens = []
+    for t in tokens:
+        if len(t) < maxlen:
+            if re.match(regex_pattern, t):
+                out_tokens.append(t)
+    out_text = ' '.join(out_tokens)
+    return out_text
 
 
 def filter_text(text, filter_set):
@@ -144,8 +147,4 @@ def create_filterset(p2_raw_train_df, output_dir):
         
         filter_words = wf.idf_filterset(original_df.text, type='manual', z=None)
         save_filterset_tofile(filter_words, os.path.join(output_dir, 'manual_filterset.txt'))
-            
         return filter_words
-
-
-

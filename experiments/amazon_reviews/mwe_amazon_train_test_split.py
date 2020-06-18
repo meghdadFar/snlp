@@ -8,6 +8,7 @@ def prepare_train_test(path_to_df, path_to_train, path_to_test, label_col='relia
     df = pd.read_csv(path_to_df, sep='\t')
     df = df.replace('', float('nan'))
     df = df.dropna()
+    # TODO Check if lower is needed
     df.review_body = df.review_body.apply(lambda x : x.lower())
     # Adjust reliability score
     df['reliability'] = df.helpful_votes.apply(lambda x :'low' if x == 0 else 
