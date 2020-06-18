@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn import preprocessing
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import ToktokTokenizer
+from snlp.data_processing.processing import clean_text
 
 toktok = ToktokTokenizer()
 
@@ -23,19 +24,11 @@ amazon_reviews['helpful_votes_std'] = hlpful_vote_std_round
 amazon_reviews['reliability'] = amazon_reviews.helpful_votes.apply(lambda x :'low' if x <= 5 else ('moderate' if x <= 20 else ('substantial' if x <= 100 else 'high')))
 amazon_reviews['sentiment'] = amazon_reviews.star_rating.apply(lambda x : 'neg' if x <= 2 else ('neutral' if x == 3 else 'pos'))
 
+amazon_reviews = amazon_reviews.replace('', float('nan'))
+amazon_reviews = amazon_reviews.dropna()
 
-# Tokenize and clean review_body
-amazon_reviews.review_body = amazon_reviews.review_body.apply(word_tokenize).apply(lambda x : ' '.join(x))
-def cleantext(text):
-    tokens = text.split(" ")
-    res = []
-    for t in tokens:
-        if re.match('^[a-zA-Z0-9!.,?\';:$/_-]+$', t):
-            res.append(t)
-    return ' '.join(res)
-amazon_reviews.review_body = amazon_reviews.review_body.apply(cleantext)
+amazon_reviews.review_body = amazon_reviews.review_body.apply(clean_text, args=('^[a-zA-Z0-9!.,?\';:$/_-]+$', {'<br />'}, {'!!!':'!'}, 15,))
 
-# Remove rows with empty field
 amazon_reviews = amazon_reviews.replace('', float('nan'))
 amazon_reviews = amazon_reviews.dropna()
 
@@ -43,8 +36,3 @@ amazon_reviews = amazon_reviews.dropna()
 amazon_reviews[['review_body', 'star_rating', 
                 'sentiment', 'helpful_votes', 
                 'helpful_votes_std','reliability']].to_csv(config["amazon"]["preped_file"], sep='\t', index=False)
-
-
-
-                
-                
