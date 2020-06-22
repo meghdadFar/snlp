@@ -53,6 +53,12 @@ def create_adjust_subplots(labels):
                  "Word Frequency", labels[2][0].capitalize(), "", 
                  "Common Nouns", "", "", "", "Common Adjectives", "", "", "", "Common Verbs")
 
+    elif len(labels) == 4:
+        titles = ("Analysis of Text", "Analysis of Labels", 
+                 "Document Lengths", labels[0][0].capitalize(), "", labels[1][0].capitalize(),
+                 "Word Frequency", labels[2][0].capitalize(), "", 
+                 "Common Nouns", labels[3][0].capitalize(), "", "Common Adjectives", "", "", "", "Common Verbs")
+
 
     fig = make_subplots(rows=16,
                 cols=2,
@@ -61,11 +67,11 @@ def create_adjust_subplots(labels):
                     [{"rowspan": 2}, {"rowspan": 2} if len(labels) >= 1 else {}], # row 2
                     [None, None if len(labels) >= 1 else {}], 
                     [{}, {"rowspan": 2} if len(labels) >= 2 else {}],   # row 4
-                    [{"rowspan": 2}, None if len(labels) >= 2 else {}], # 
-                    [None, {"rowspan": 2} if len(labels) >= 2 else {}], # row 6
-                    [{}, None if len(labels) >= 2 else {}],
-                    [{"rowspan": 3}, {}], # row 8
-                    [None, {}],
+                    [{"rowspan": 2}, None if len(labels) >= 2 else {}],
+                    [None, {"rowspan": 2} if len(labels) >= 3 else {}], # row 6
+                    [{}, None if len(labels) >= 3 else {}],
+                    [{"rowspan": 3}, {"rowspan": 2} if len(labels) >= 4 else {}], # row 8
+                    [None, None if len(labels) >= 4 else {}],
                     [None, {}],
                     [{"rowspan": 3}, {}], # 12
                     [None, {}],
@@ -134,8 +140,8 @@ def generate_report(df, out_dir, text_col, label_cols=[], language='english', sk
         pos_tags (list): Analysis on POS tags. Currently supports NN, JJ, and V
     """
     
-    if len(label_cols)>3:
-        raise ValueError('Maximum of 3 labels can be specidied for analysis.')
+    if len(label_cols)>4:
+        raise ValueError('Maximum of 4 labels can be specidied for analysis.')
 
     stop_words = set(stopwords.words(language))
     punctuations = set(string.punctuation)
@@ -281,6 +287,19 @@ def generate_report(df, out_dir, text_col, label_cols=[], language='english', sk
             fig_main.update_yaxes(title_text="Count", row=2, col=2)
             fig_main.update_yaxes(title_text="Count", row=4, col=2)
             fig_main.update_yaxes(title_text="Count", row=6, col=2)
+        elif len(label_cols) == 4:
+            lab_trace1 = create_label_plot(df, label_col=label_cols[0][0], label_type=label_cols[0][1])
+            lab_trace2 = create_label_plot(df, label_col=label_cols[1][0], label_type=label_cols[1][1])
+            lab_trace3 = create_label_plot(df, label_col=label_cols[2][0], label_type=label_cols[2][1])
+            lab_trace4 = create_label_plot(df, label_col=label_cols[3][0], label_type=label_cols[3][1])
+            fig_main.append_trace(lab_trace1, 2, 2)
+            fig_main.append_trace(lab_trace2, 4, 2)
+            fig_main.append_trace(lab_trace3, 6, 2)
+            fig_main.append_trace(lab_trace4, 8, 2)
+            fig_main.update_yaxes(title_text="Count", row=2, col=2)
+            fig_main.update_yaxes(title_text="Count", row=4, col=2)
+            fig_main.update_yaxes(title_text="Count", row=6, col=2)
+            fig_main.update_yaxes(title_text="Count", row=8, col=2)
 
        
 

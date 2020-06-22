@@ -13,7 +13,7 @@ amazon_reviews = amazon_reviews.sample(100)
 text_analysis.generate_report(df=amazon_reviews, 
                               out_dir=config['amazon']['analysis_dir'],
                               text_col='review_body',
-                              label_cols=[('sentiment', 'categorical'), ('reliability', 'categorical'), ('star_rating', 'numerical')],
+                              label_cols=[('sentiment', 'categorical'), ('reliability', 'categorical'), ('star_rating', 'numerical'), ('star_rating', 'numerical')],
                               pos_tags=['NN', 'JJ', 'VB'])
 
 # label_cols=[('sentiment', 'categorical'), ('reliability', 'categorical'), ('star_rating', 'numerical')]
