@@ -1,6 +1,7 @@
 import string
 import nltk
 import random
+import plotly
 
 import pandas as pd
 import seaborn as sns
@@ -28,6 +29,14 @@ from plotly import tools
 # nltk.download('stopwords')
 
 def create_adjust_subplots(labels):
+    """Create subplots and adjust the location of the titles wrt the number of labels. 
+
+        Args:
+            labels (list): List of (label, type) tuples.
+
+        Returns:
+            fig (plotly.graph_objs.Figure)
+    """
 
     if len(labels) == 0:
         titles = ("Analysis of Text", "Analysis of Labels", 
@@ -85,6 +94,14 @@ def create_adjust_subplots(labels):
 
 
 def plotly_wordcloud(token_count_dic):
+    """Creates a world cloud trace for plotly. 
+
+        Args:
+            token_count_dic (dictionary): Dictionary of token to its count
+
+        Returns:
+            trace (Plotly trace)
+    """
 
     wc = WordCloud(color_func=get_single_color_func('deepskyblue'), max_words=100)
     wc.generate_from_frequencies(token_count_dic) 
@@ -133,11 +150,16 @@ def plotly_wordcloud(token_count_dic):
 
 
 
-def generate_report(df, out_dir, text_col, label_cols=[], language='english', skip_stopwords_punc=True, pos_tags=None):
-    """
+def generate_report(df, out_dir, text_col, label_cols=[], language='english', skip_stopwords_punc=True, pos_tags=None, save_report=False):
+    """Generates analysis report and eitherr renders the report via Plotly show api or saves it offline to html. 
+
     Args:
+        df (Pandas DataFrame): DataFrame that contains text and labels. 
         text_col (string): tokenized text.
         pos_tags (list): Analysis on POS tags. Currently supports NN, JJ, and V
+
+    Returns:
+        None
     """
     
     if len(label_cols)>4:
@@ -306,11 +328,14 @@ def generate_report(df, out_dir, text_col, label_cols=[], language='english', sk
         
         # Main figure: Update and show
         fig_main.update_layout(height=3100, showlegend=False)
-        fig_main.show()
-    
-        # Add annotation and align 
-        # doc_len_description = 'Distribution of document lengths. You can observe what document lengths are most common and which document lengths are too large and based on this observation, you can specify a cut-of threshold'
-        # fig_main.layout.annotations[0].update(text=doc_len_description, x=0.1)
+        if save_report:
+            plotly.offline.plot(fig_main, filename='report.html')
+        else:
+            fig_main.show()
+
+        # TODO Add annotation and align 
+        # TODO doc_len_description = 'Distribution of document lengths. You can observe what document lengths are most common and which document lengths are too large and based on this observation, you can specify a cut-of threshold'
+        # TODO fig_main.layout.annotations[0].update(text=doc_len_description, x=0.1)
         
         
 
