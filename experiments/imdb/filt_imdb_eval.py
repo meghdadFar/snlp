@@ -6,7 +6,7 @@ import json
 import pandas as pd
 from fasttext import load_model
 
-from snlp.data_processing.processing import predict_dataframe
+from snlp.evaluation.functions import predict_dataframe
 from snlp.evaluation.metrics import evaluate_model
 
 

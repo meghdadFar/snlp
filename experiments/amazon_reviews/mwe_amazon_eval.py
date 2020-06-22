@@ -4,7 +4,7 @@ import os
 
 from fasttext import train_supervised, load_model
 from snlp.evaluation.metrics import evaluate_model
-from snlp.data_processing.processing import predict_dataframe
+from snlp.evaluation.functions import predict_dataframe
 from matplotlib import pyplot as plt
 
 

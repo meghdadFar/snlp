@@ -1,6 +1,5 @@
 import torch
 import re
-import random
 import nltk
 import pandas as pd
 import os
@@ -17,24 +16,7 @@ from tqdm import tqdm
 from os import listdir
 
 
-def dataset_to_corpus(ds, df_path):
-    """Create corpus from torchtext dataset.
-    
-    Args:
-        ds (torch.dataset): 
-        df_path (string): Path to output dataframe
-
-    Returns:
-    
-    """
-    with open(df_path, 'w') as L:
-        ds_examples = ds.examples
-        random.shuffle(ds_examples)
-        for te in tqdm(ds_examples):
-            L.write('__label__'+te.label + '\t' + ' '.join(te.text)+'\n')
-
-
-def preprocess_dataset(path_to_input, path_to_output, regex_pattern, drop, replace, filter_set=None):
+def preprocess_dataframe(path_to_input, path_to_output, regex_pattern, drop, replace, filter_set=None):
     """Remove unwanted patterns (and filter insignificant words). 
     """
     df = pd.read_csv(path_to_input, sep='\t', names=['label', 'text'])
@@ -45,22 +27,6 @@ def preprocess_dataset(path_to_input, path_to_output, regex_pattern, drop, repla
         df.text = df.text.apply(lambda x: x.split(' ')) # TODO Also done above; Make more efficient. 
         df.text = df.text.apply(filter_text, args=(filter_set,))
     df.to_csv(path_to_output, index=False, header=False, sep='\t')
-
-
-def preprocess_textcorpus(path_to_input, path_to_output, regex_pattern, drop, replace, filter_set=None):
-    """Remove unwanted patterns (and filter insignificant words) from corpus. 
-    """
-    with open(path_to_input, 'r') as f:
-        lines = f.readlines()    
-
-    lines = [clean_text(l, regex_pattern, drop, replace) for l in lines]
-
-    if filter_set:
-        lines = [filter_text(l, filter_set) for l in lines]
-    
-    out_file=open(path_to_output,'w')
-    out_file.writelines(lines)
-    out_file.close()
     
 
 def clean_text(text, regex_pattern, drop, replace, maxlen=15):
@@ -120,14 +86,6 @@ def save_filterset_tofile(filter_set, path):
         for word in filter_set:
             f.write(word + '\n')
     f.close()
-
-
-def predict_dataframe(classification_model, data_frame):
-            predictions = []
-            for i in range(data_frame.shape[0]):
-                predictions.append(classification_model.predict(data_frame.iloc[i]['text'])[0][0])
-            groundtruth = data_frame['label'].tolist()
-            return predictions, groundtruth
 
 
 def create_filterset_map(p2_raw_train_df, output_dir, zs=[3]):
