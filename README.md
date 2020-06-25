@@ -20,12 +20,12 @@ Install the package:
 
 `pip3 install snlp`
 
-For different functionalities, see worked examples below:
+See the description of different functionalities with worked examples below. 
 
 ### Text Cleaning
 
 *snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
-Using, `clean_text`, you can first what pattern to accept via `regex_pattern` argument, 
+Using, `clean_text`, you can choose what pattern to accept via `regex_pattern` argument, 
 what pattern to drop via `drop` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
 Let's use the IMDB Sentiment Dataset as an example. 
 
@@ -46,8 +46,13 @@ replace={'!!!':'!', '???':'?'}
 # Finally, let's set the maximum length of a token to 15:
 maxlen=15
 
-imdb_train.text = imdb_train.text.apply(clean_text, args=('^[a-zA-Z0-9!.,?\';:$/_-]+$', {'<br />'}, {'!!!':'!'}, 15,))
+imdb_train.text = imdb_train.text.apply(clean_text, args=('^[a-zA-Z0-9!.,?\';:$/_-]+$', 
+                                                         {'<br / >', '< br >'}, 
+                                                         {'!!!':'!', '???':'?'}, 
+                                                         15,))
 ```
+
+`clean_text` returns a tokenized text. 
 
 ### Text Analysis
 
@@ -86,38 +91,18 @@ Identifying fixed expressions has application in a wide range of NLP taska rangi
 You can use `snlp` to identify fixed noun-noun and adjective-nount expressions in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first import required libraries: 
 
 ```python
-import snlp
-import pandas as pd
+from snlp.mwes import get_counts, get_ams
 
-from snlp.mwes.am import get_counts, get_ams
-from nltk.tokenize import word_tokenize
-from essential_generators import DocumentGenerator
-```
-Install `essential_generators` using pip in order to generate random text. In the following example, you also need nltk for some preprocessing. `nltk` is already installed as a dependency of `snlp`. So you don't need to install it again. 
-
-Then create a dataframe and populate it with random text:
-
-```python
-mydf = pd.DataFrame(columns=['text', 'topic'])
-gen = DocumentGenerator()
-mydf.text = [gen.sentence() for i in range(10)]
-mydf.topic = [gen.word() for i in range(10)]
+imdb_train = imdb_train.text.apply( lambda x : x.lower())
 ```
 
-Do some preprocessing:
+Run `get_counts` to extract compounds and their corresponding frequencies and then run `get_ams` to calculate their corresponding *PMI* and rank them based on their *PMI* value:
 
 ```python
-mydf.text = mydf.text.apply(word_tokenize).apply(lambda x : ' '.join(x)).apply(lambda x : x.lower())
-mydf.topic = mydf.topic.apply( lambda x : x.lower())
-```
-
-Run `get_counts` to extract required compounds, their corresponding frequencies and then `get_ams` for the calculation of *PMI* and ranking compounds based on their *PMI* value:
-
-```python
-get_counts(mydf, text_column='text', output_dir='tmp/')
+get_counts(imdb_train, text_column='text', output_dir='tmp/')
 get_ams(path_to_counts='tmp/')
 ```
 
-The results can be found in `output_dir` (which is the same as `path_to_counts`). 
+The ranked compounds can be found in `output_dir`. 
 
 
