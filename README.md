@@ -27,7 +27,8 @@ See the description of different functionalities with worked examples below.
 *snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
 Using, `clean_text`, you can choose what pattern to accept via `regex_pattern` argument, 
 what pattern to drop via `drop` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
-Let's use the IMDB Sentiment Dataset as an example. 
+Let's use the IMDB Sentiment Dataset as an example (The easiest way to acquire the dataset is via [torchtext datasets](https://torchtext.readthedocs.io/en/latest/datasets.html#imdb)). 
+
 
 ```python
 from snlp.preprocess import clean_text
