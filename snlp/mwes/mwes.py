@@ -1,4 +1,4 @@
-class MWEs(object):
+class MWE(object):
     """ Multiword Expressions (MWEs) class provides functionalities for an unsupervised extraction of MWEs from text.
 
     Features 

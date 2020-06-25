@@ -10,8 +10,18 @@ import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import ToktokTokenizer
 from collections import Counter
+from snlp import logger 
 
 nltk.download('averaged_perceptron_tagger')
+
+"""
+TODO: 
+    
+    1. Include more AMs
+    2. Include SDMA
+    3. Function to create embedding for MWEs by combining the embeding of their components. 
+"""
+
 
 def extract_ncs_from_sent(sentence):
     """Extract two-word noun compounds from tokenized input. 

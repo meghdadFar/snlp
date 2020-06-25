@@ -7,7 +7,7 @@ import time
 
 
 def replace_compunds(path_to_compounds, df, text_column, am_threshold=0.5, only_compounds=False, lower_case=False):
-    """Hyphenates the compounds in the corpus so that they are treated as a single token.
+    """Hyphenates the compounds in the corpus so that they are treated as a single token by downstream applications.
 
     Args:
         
@@ -19,9 +19,9 @@ def replace_compunds(path_to_compounds, df, text_column, am_threshold=0.5, only_
 
     Returns:
         df (pd.FataFrame)
-        
 
     """
+
     json_file = open(path_to_compounds)
     json_str = json_file.read()
 
@@ -77,21 +77,3 @@ def get_ngrams(sentence, n):
     for i in range(len(tokens)-n+1):
         ngrams.append(' '.join(tokens[i:i+n]))
     return ngrams
-
-
-def visualize_compound_pmi(path_to_compounds):
-    json_file = open(path_to_compounds)
-    json_str = json_file.read()
-    pmi_ord_dict = json.loads(json_str, object_pairs_hook=collections.OrderedDict)
-    
-    pmi_ord_list = list(pmi_ord_dict)
-    print('Num of compounds: %d' %len(pmi_ord_list))
-    for i, (k, v) in enumerate(pmi_ord_dict):
-        print(i, k, v)
-        if i == 1000:
-            break
-
-
-if __name__ == "__main__":
-    raise Exception(NotImplemented)
-   
