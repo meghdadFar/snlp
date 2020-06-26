@@ -1,18 +1,14 @@
 import string
 import nltk
 import plotly
-
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import plotly.figure_factory as ff
+import plotly.graph_objs as go
 
 from wordcloud import WordCloud, get_single_color_func
 from snlp import logger
 from tqdm import tqdm
 from nltk.corpus import stopwords
-
-import plotly.figure_factory as ff
-import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
 

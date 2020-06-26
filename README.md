@@ -87,8 +87,8 @@ generate_report(df=imdb_train,
 ```
 
 The above yields a report with interactive plotly plots as can be seen in the screenshots below. An example report can be seen [here](resources/report.html). 
-![upper](resources/images/upper)
-![lower](resources/images/lower)
+![upper](https://github.com/meghdadFar/snlp/blob/master/resources/images/upper.png)
+![lower](https://github.com/meghdadFar/snlp/blob/master/resources/images/lower.png)
 
 
 ### Extraction of Fixed (Idiosyncratic) Expressions

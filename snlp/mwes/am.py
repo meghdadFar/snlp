@@ -12,7 +12,6 @@ from nltk.tokenize import ToktokTokenizer
 from collections import Counter
 from snlp import logger 
 
-nltk.download('averaged_perceptron_tagger')
 
 """
 TODO: 
