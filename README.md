@@ -88,7 +88,7 @@ generate_report(df=imdb_train,
 The above yields a report with interactive plotly plots as can be seen in the screenshots below. 
 
 ![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png)
-![label](https://github.com/meghdadFar/snlp/blob/master/resources/images/label.png)
+![labels](https://github.com/meghdadFar/snlp/blob/master/resources/images/labels.png)
 ![toolbar](https://github.com/meghdadFar/snlp/blob/master/resources/images/toolbar.png)
 ![zoom](https://github.com/meghdadFar/snlp/blob/master/resources/images/zoom.png)
 ![wc](https://github.com/meghdadFar/snlp/blob/master/resources/images/wc.png)
