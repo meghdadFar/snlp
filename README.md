@@ -112,7 +112,8 @@ get_ams(path_to_counts='tmp/')
 Running the above yields two sets of ranked noun-noun and adjective-noun expressions that can be found in `output_dir` under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked fixed expressions can be seen below:
 
 ```
-nn_pmi.json:
+nn_pmi.json
+-----------
 jet li
 clint eastwood
 monty python
@@ -120,7 +121,8 @@ kung fu
 blade runner
 
 
-jn_pmi.json:
+jn_pmi.json
+-----------
 spinal tap
 martial arts
 citizen kane
