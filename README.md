@@ -109,7 +109,7 @@ get_counts(imdb_train, text_column='text', output_dir='tmp/')
 get_ams(path_to_counts='tmp/')
 ```
 
-Running the above yields two sets of ranked noun-noun and adjective-noun expressions that can be found in `output_dir` under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked fixed expressions can be seen below:
+Running the above yields two sets of ranked *noun-noun* and *adjective-noun* expressions that can be found in `output_dir` respectively under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked fixed expressions can be seen below:
 
 ```
 nn_pmi.json
