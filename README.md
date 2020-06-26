@@ -81,14 +81,18 @@ imdb_train['new_label'] = random.choices(['a', 'b', 'c', 'd'], [0.2, 0.5, 0.8, 0
 generate_report(df=imdb_train,
                 out_dir='output_dir',
                 text_col='text',
-                label_cols=[('label', 'categorical'), ('new_label', 'categorical'), ('numerical_label', 'numerical')],
-                save_report=True)
+                label_cols=[('label', 'categorical'), ('new_label', 'categorical'), ('numerical_label', 'numerical')])
 
 ```
 
-The above yields a report with interactive plotly plots as can be seen in the screenshots below. An example report can be seen [here](resources/report.html). 
-![upper](https://github.com/meghdadFar/snlp/blob/master/resources/images/upper.png)
-![lower](https://github.com/meghdadFar/snlp/blob/master/resources/images/lower.png)
+The above yields a report with interactive plotly plots as can be seen in the screenshots below. 
+
+![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png)
+![label](https://github.com/meghdadFar/snlp/blob/master/resources/images/label.png)
+![toolbar](https://github.com/meghdadFar/snlp/blob/master/resources/images/toolbar.png)
+![zoom](https://github.com/meghdadFar/snlp/blob/master/resources/images/zoom.png)
+![wc](https://github.com/meghdadFar/snlp/blob/master/resources/images/wc.png)
+![annotation1](https://github.com/meghdadFar/snlp/blob/master/resources/images/annotation1.png)
 
 
 ### Extraction of Fixed (Idiosyncratic) Expressions
