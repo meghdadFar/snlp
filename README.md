@@ -113,7 +113,6 @@ Running the above yields two sets of ranked noun-noun and adjective-noun express
 
 ```
 nn_pmi.json:
-
 jet li
 clint eastwood
 monty python
@@ -122,7 +121,6 @@ blade runner
 
 
 jn_pmi.json:
-
 spinal tap
 martial arts
 citizen kane
