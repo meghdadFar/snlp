@@ -14,11 +14,11 @@ Statistical NLP (SNLP): A practical package with statisical natural language pro
 - Text cleaning 
 - Text analysis
 - Extraction of Fixed (Idiosyncratic) Expressions
-- Identification of statistically redundant words for filtering. 
+- Identification of statistically redundant words for filtering
 
 ### Upcoming Features
-- Anamoly Detection. 
-- Identifying non-compositional compouds such as *red tape* and *brain drain* in the corpus .
+- Anamoly Detection
+- Identifying non-compositional compouds such as *red tape* and *brain drain* in the corpus
 
 ## Usage
 
@@ -94,10 +94,10 @@ generate_report(df=imdb_train,
 The above yields a report in HTML, with interactive `plotly` plots as can be seen in example screenshots below. 
 
 ![annotation1](https://github.com/meghdadFar/snlp/blob/master/resources/images/annotation1.png)
-![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png)
+<!-- ![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png) -->
 ![toolbar](https://github.com/meghdadFar/snlp/blob/master/resources/images/toolbar.png)
 ![zoom](https://github.com/meghdadFar/snlp/blob/master/resources/images/zoom.png)
-![labels](https://github.com/meghdadFar/snlp/blob/master/resources/images/labels.png)
+<!-- ![labels](https://github.com/meghdadFar/snlp/blob/master/resources/images/labels.png) -->
 ![wc](https://github.com/meghdadFar/snlp/blob/master/resources/images/wc.png)
 
 
@@ -138,6 +138,6 @@ global warming
 
 The main idea behind the extraction of fixed Expressions is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using `snlp.mwe.replace_compunds` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. 
 
-### **Identification of statistically redundant words for filtering**
+### **Identification of Statistically Redundant Words for Filtering**
 
 Words can be represented with various statistics. For instance, they can be represented by term frequency (tf) or inverse document ferquency (idf). Terms with anomalous (very high or very low) statistics usually carry no value for  document classification. This package provides a functionality (`snlp.preprocessing.WordFilter`) to identify such terms in a completely automatic fashion. The logic is to first gaussanize the distribution of specified statistic (tf or ifd), then identify words with anomalous values on the gaussanized distribution by looking at their z-score. This way, one does not have to manually provide upper and lower thresholds.
