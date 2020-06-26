@@ -27,13 +27,15 @@ See the description of different functionalities with worked examples below.
 *snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
 Using, `clean_text`, you can choose what pattern to accept via `regex_pattern` argument, 
 what pattern to drop via `drop` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
-Let's use the IMDB Sentiment Dataset as an example (The easiest way to acquire the dataset is via [torchtext datasets](https://torchtext.readthedocs.io/en/latest/datasets.html#imdb)). 
+Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/data/sentiment/) as an example. A sample of this data can be found in `resources/data/imdb_train_sample.tsv`.
 
 
 ```python
+import torch
+from torchtext import datasets
 from snlp.preprocess import clean_text
 
-imdb_train = pd.read_csv('imdb_train.tsv', sep='\t', names=['label', 'text'])
+imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 
 # Let's only keep alphanumeric tokens as well as important punctuation marks:
 regex_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
@@ -76,12 +78,12 @@ The above script creates an analysis report that includes distribution plots and
 
 ```python
 import numpy as np
-imdb_train['fake_label'] = np.random.randint(1, 500, imdb_train.shape[0])
+imdb_train['numerical_label'] = np.random.randint(1, 500, imdb_train.shape[0])
 
 generate_report(df=imdb_train,
                 out_dir='output_dir',
                 text_col='text',
-                label_cols=[('label', 'categorical'), ('fake_label', 'numerical')])
+                label_cols=[('label', 'categorical'), ('numerical_label', 'numerical')])
 
 ```
 
