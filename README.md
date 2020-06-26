@@ -136,3 +136,8 @@ facial expressions
 global warming
 ```
 
+The main idea behind the extraction of fixed Expressions is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using `snlp.mwe.replace_compunds` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. 
+
+### Identification of statistically redundant words for filtering
+
+Words can be represented with various statistics. For instance, they can be represented by term frequency (tf) or inverse document ferquency (idf). Terms with anomalous (very high or very low) statistics usually carry no value for  document classification. This package provides a functionality (`snlp.preprocessing.WordFilter`) to identify such terms in a completely automatic fashion. The logic is to first gaussanize the distribution of specified statistic (tf or ifd), then identify words with anomalous values on the gaussanized distribution by looking at their z-score. This way, one does not have to manually provide upper and lower thresholds.
