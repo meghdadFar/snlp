@@ -109,6 +109,19 @@ get_counts(imdb_train, text_column='text', output_dir='tmp/')
 get_ams(path_to_counts='tmp/')
 ```
 
-The ranked compounds can be found in `output_dir`. 
+Running the above yields two sets of ranked noun-noun and adjective-noun expressions that can be found in `output_dir` under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked fixed expressions can be seen below:
 
+```
+nn_pmi.json:
+[[busby berkeley", [11.2, 0.94]], ["burgess meredith", [11.13, 0.92]], ["jet li", [10.0, 0.89]], 
+["clint eastwood", [10.27, 0.89]], ["claire danes", [10.06, 0.89]], ["bruno mattei", [10.92, 0.89]], 
+["kung fu", [9.55, 0.88]], ["monty python", [10.69, 0.86]], ["denise richards", [10.63, 0.86]], ["victor mclaglen", [10.33, 0.85]], 
+["blade runner", [10.48, 0.85]], ["guinea pig", [10.52, 0.85]]
+
+jn_pmi.json:
+[["spinal tap", [11.35, 0.96]], ["uwe boll", [11.0, 0.96]], ["martial arts", [9.52, 0.95]],
+["farrah fawcett", [11.2, 0.93]], ["eli wallach", [11.14, 0.93]], ["akshay kumar", [10.7, 0.9]], 
+["timothy dalton", [10.04, 0.89]], ["rita hayworth", [10.85, 0.89]], ["citizen kane", [10.11, 0.88]], ["facial expressions", [10.06, 0.88]], 
+["united states", [9.72, 0.88]], ["global warming", [10.44, 0.87]]
+```
 
