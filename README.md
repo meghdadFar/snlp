@@ -1,6 +1,11 @@
 # snlp
 
+[![PyPI version](https://badge.fury.io/py/snlp.svg)](https://badge.fury.io/py/snlp)
+
+
 [![HitCount](http://hits.dwyl.com/meghdadFar/snlp.svg)](http://hits.dwyl.com/meghdadFar/snlp)
+
+
 
 Statistical NLP (SNLP): A practical package with statisical natural language processing tools. SNLP is based on statistical and distributional attributes of natural language and hence most of the functionalities are unsupervised.
 
