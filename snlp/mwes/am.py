@@ -112,7 +112,7 @@ def get_counts(df, text_column, output_dir):
         output_dir (string): Path to output dir where calculated counts will be saved. 
 
     Returns:
-        0 (int): If count files are successfully stored in the specified path. 
+        None
     """
     NNs_total = {}
     JNs_total = {}
@@ -164,11 +164,8 @@ def get_counts(df, text_column, output_dir):
 
         with open(os.path.join(output_dir, 'w_count.txt'), 'w') as file:
             file.write(str(W_count))
-    except:
-        raise
-    else:
-        return 0
-
+    except Exception as e:
+        raise e
 
 
 def get_ams(path_to_counts, ams=['pmi']):
@@ -215,10 +212,10 @@ def get_ams(path_to_counts, ams=['pmi']):
                 file.write(json.dumps(res))
         
         if 'chis' in ams:
-            print('Chis is not implemented.')
+            logger.warning('Chis is not implemented.')
         
         if 't' in ams:
-            print('t is not implemented.')
+            logger.warning('t is not implemented.')
 
 
     
