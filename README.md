@@ -31,9 +31,7 @@ Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/dat
 
 
 ```python
-import torch
-from torchtext import datasets
-from snlp.preprocess import clean_text
+from snlp.preprocessing import clean_text
 
 imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 
@@ -41,18 +39,15 @@ imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names
 regex_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
 
 # In this corpus, one can frequently see HTML tags such as `< br / >`. So let's drop them:
-drop={'<br / >', '< br >'}
+drop={'< br / >'}
 
 # By skimming throw the text one can frequently see many patterns such as !!! or ???. Let's replace them:
-replace={'!!!':'!', '???':'?'}
+replace={'!!!':'!', '\?\?\?':'?'}
 
 # Finally, let's set the maximum length of a token to 15:
 maxlen=15
 
-imdb_train.text = imdb_train.text.apply(clean_text, args=('^[a-zA-Z0-9!.,?\';:$/_-]+$', 
-                                                         {'<br / >', '< br >'}, 
-                                                         {'!!!':'!', '???':'?'}, 
-                                                         15,))
+imdb_train.text = imdb_train.text.apply(clean_text, args=(regex_pattern, drop, replace, maxlen,))
 ```
 
 `clean_text` returns a tokenized text. 
@@ -78,14 +73,23 @@ The above script creates an analysis report that includes distribution plots and
 
 ```python
 import numpy as np
+import random
+
 imdb_train['numerical_label'] = np.random.randint(1, 500, imdb_train.shape[0])
+imdb_train['new_label'] = random.choices(['a', 'b', 'c', 'd'], [0.2, 0.5, 0.8, 0.9], k=imdb_train.shape[0])
 
 generate_report(df=imdb_train,
                 out_dir='output_dir',
                 text_col='text',
-                label_cols=[('label', 'categorical'), ('numerical_label', 'numerical')])
+                label_cols=[('label', 'categorical'), ('new_label', 'categorical'), ('numerical_label', 'numerical')],
+                save_report=True)
 
 ```
+
+The above yields a report with interactive plotly plots as can be seen in the screenshots below. An example report can be seen [here](resources/report.html). 
+![upper](resources/images/upper)
+![lower](resources/images/lower)
+
 
 ### Extraction of Fixed (Idiosyncratic) Expressions
 
