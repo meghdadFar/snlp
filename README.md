@@ -85,14 +85,14 @@ generate_report(df=imdb_train,
 
 ```
 
-The above yields a report with interactive plotly plots as can be seen in the screenshots below. 
+The above yields a report in HTML, with interactive `plotly` plots as can be seen in example screenshots below. 
 
+![annotation1](https://github.com/meghdadFar/snlp/blob/master/resources/images/annotation1.png)
 ![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png)
 ![toolbar](https://github.com/meghdadFar/snlp/blob/master/resources/images/toolbar.png)
 ![zoom](https://github.com/meghdadFar/snlp/blob/master/resources/images/zoom.png)
 ![labels](https://github.com/meghdadFar/snlp/blob/master/resources/images/labels.png)
 ![wc](https://github.com/meghdadFar/snlp/blob/master/resources/images/wc.png)
-![annotation1](https://github.com/meghdadFar/snlp/blob/master/resources/images/annotation1.png)
 
 
 ### Extraction of Fixed (Idiosyncratic) Expressions
@@ -100,16 +100,11 @@ The above yields a report with interactive plotly plots as can be seen in the sc
 Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
 You can use `snlp` to identify fixed noun-noun and adjective-nount expressions in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first import required libraries: 
+Run `get_counts` to extract compounds and their corresponding frequencies and then run `get_ams` to calculate their corresponding *PMI* and rank them based on their *PMI* value:
 
 ```python
 from snlp.mwes import get_counts, get_ams
 
-imdb_train = imdb_train.text.apply( lambda x : x.lower())
-```
-
-Run `get_counts` to extract compounds and their corresponding frequencies and then run `get_ams` to calculate their corresponding *PMI* and rank them based on their *PMI* value:
-
-```python
 get_counts(imdb_train, text_column='text', output_dir='tmp/')
 get_ams(path_to_counts='tmp/')
 ```
