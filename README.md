@@ -81,6 +81,7 @@ The above script creates an analysis report that includes distribution plots and
 import numpy as np
 import random
 
+# In addition to the original label, for illustration purpose, let's create two random labels:
 imdb_train['numerical_label'] = np.random.randint(1, 500, imdb_train.shape[0])
 imdb_train['new_label'] = random.choices(['a', 'b', 'c', 'd'], [0.2, 0.5, 0.8, 0.9], k=imdb_train.shape[0])
 
