@@ -8,7 +8,7 @@
 [![HitCount](http://hits.dwyl.com/meghdadFar/snlp.svg)](http://hits.dwyl.com/meghdadFar/snlp)
 
 
-Statistical NLP (SNLP): A practical package with statisical natural language processing tools. SNLP is based on statistical and distributional attributes of natural language and hence most of the functionalities are unsupervised.
+Statistical NLP (SNLP) is a practical package with statisical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
 ## Features
 - Text cleaning 
@@ -138,6 +138,6 @@ global warming
 
 The main idea behind the extraction of fixed Expressions is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using `snlp.mwe.replace_compunds` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. 
 
-### **Identification of Statistically Redundant Words for Filtering**
+### **Identification of Statistically Redundant Words**
 
 Words can be represented with various statistics. For instance, they can be represented by term frequency (tf) or inverse document ferquency (idf). Terms with anomalous (very high or very low) statistics usually carry no value for  document classification. This package provides a functionality (`snlp.preprocessing.WordFilter`) to identify such terms in a completely automatic fashion. The logic is to first gaussanize the distribution of specified statistic (tf or ifd), then identify words with anomalous values on the gaussanized distribution by looking at their z-score. This way, one does not have to manually provide upper and lower thresholds.
