@@ -4,7 +4,6 @@
 
 [![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
-
 [![HitCount](http://hits.dwyl.com/meghdadFar/snlp.svg)](http://hits.dwyl.com/meghdadFar/snlp)
 
 
@@ -31,8 +30,8 @@ See the description of different functionalities with worked examples below.
 ### **Text Cleaning**
 
 *snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
-Using, `clean_text`, you can choose what pattern to accept via `regex_pattern` argument, 
-what pattern to drop via `drop` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
+Using, `clean_text`, you can choose what pattern to accept via `keep_pattern` argument, 
+what pattern to drop via `drop_patterns` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
 Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/data/sentiment/) as an example. A sample of this data can be found in `resources/data/imdb_train_sample.tsv`.
 
 
@@ -42,10 +41,10 @@ from snlp.preprocessing import clean_text
 imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 
 # Let's only keep alphanumeric tokens as well as important punctuation marks:
-regex_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
+keep_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
 
 # In this corpus, one can frequently see HTML tags such as `< br / >`. So let's drop them:
-drop={'< br / >'}
+drop_patterns={'< br / >'}
 
 # By skimming throw the text one can frequently see many patterns such as !!! or ???. Let's replace them:
 replace={'!!!':'!', '\?\?\?':'?'}
@@ -53,7 +52,7 @@ replace={'!!!':'!', '\?\?\?':'?'}
 # Finally, let's set the maximum length of a token to 15:
 maxlen=15
 
-imdb_train.text = imdb_train.text.apply(clean_text, args=(regex_pattern, drop, replace, maxlen,))
+imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_patterns, replace, maxlen,))
 ```
 
 `clean_text` returns a tokenized text. 
@@ -61,8 +60,8 @@ imdb_train.text = imdb_train.text.apply(clean_text, args=(regex_pattern, drop, r
 ### **Text Analysis**
 
 *snlp* provides an easy to use function (`text_analysis.generate_report`) for analyzing text with an extensive analysis report. `text_analysis.generate_report` 
-receives as input a dataframe that contains a text column, and an optional number of label columns. `text_analysis.generate_report` can generate plots for upto 4
-numerical or categorical labels. See the example below for more details. 
+receives as input a dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for upto 4
+numerical or categorical labels. See the example below for more details.
 
 ```python
 from snlp.text_analysis import generate_report

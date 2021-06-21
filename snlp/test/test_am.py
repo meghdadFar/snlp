@@ -1,5 +1,5 @@
 import unittest
-from snlp.mwes.am import extract_ncs_from_sent, get_ams, get_counts
+from snlp.mwes.am import extract_ncs_from_sent, calculate_am, get_counts
 
 
 class TestAms(unittest.TestCase):

@@ -1,9 +1,8 @@
 import json
 import collections
-import pandas as pd
+import pandas
 import re
 import tqdm
-import time
 
 
 def replace_compunds(path_to_compounds, df, text_column, am_threshold=0.5, only_compounds=False, lower_case=False):
@@ -18,7 +17,7 @@ def replace_compunds(path_to_compounds, df, text_column, am_threshold=0.5, only_
         only_compounds (bool): Whether or not keep only compounds and drop the rest of the text
 
     Returns:
-        df (pd.FataFrame)
+        df (pandas.FataFrame)
 
     """
 

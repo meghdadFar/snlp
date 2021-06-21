@@ -131,6 +131,9 @@ dmypy.json
 # VS Code
 .vscode/
 
+# OS
+.DS_Store
+
 # Current
 tmp* 
 venv3/
