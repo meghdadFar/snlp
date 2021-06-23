@@ -1,5 +1,5 @@
-from typing import List
-from collections import OrderedDict
+from typing import List, Dict
+import collections
 import json
 import math
 import os
@@ -11,7 +11,7 @@ TODO:
 """
 
 
-def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_words: int, normalize: bool= False) -> dict:
+def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_words: int, normalize: bool= False) -> Dict[str, float]:
     """Calculate Pointwise Mutual Information between the two words of every word pair in nn_dict.
 
     Args:
@@ -19,10 +19,10 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
         word_dic: Dictionary of words and their count.
         num_compound: Number of compounds.
         num_words: Number of words.
-        normalize: Whether or not normalize the pmi score. 
+        normalize: Whether or not normalize the pmi score. Normalized pmi is referred to as npmi. 
 
     Returns:
-        ordered_compound_dict: Dictionary of compounds and their pmi and npmi values, wrt their pmi/npmi.
+        sorted_compound_dict: Dictionary of compounds and their pmi/npmi values, sorted wrt their pmi/npmi.
     """
     tmp_compound_dict = compound_dict
     for compound, count in tmp_compound_dict.items():
@@ -41,14 +41,13 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
         else:
             tmp_compound_dict[compound] = [0.0]
 
-    ordered_compound_dict = OrderedDict()
-    ordered_compound_dict = sorted(tmp_compound_dict.items(), key=lambda e: e[1], reverse=True)
-    return ordered_compound_dict
+    sorted_compound_dict = dict(sorted(tmp_compound_dict.items(), key=lambda e: e[1], reverse=True))
+    return sorted_compound_dict
 
 
 def calculate_am(count_data: dict, 
                 am: str,
-                mwe_types) -> None:
+                mwe_types) -> Dict[str, Dict]:
     """Read the counts from path_to_counts and for each compound calculates the measure specified by am.
 
     Args:

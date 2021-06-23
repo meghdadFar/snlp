@@ -1,78 +1,82 @@
 import json
 import collections
+from typing import Dict, List
 import pandas
 import re
 import tqdm
+from snlp import logger
 
 
-def replace_compunds(path_to_compounds, df, text_column, am_threshold=0.5, only_compounds=False, lower_case=False):
+def replace_compunds(mwe_dict: Dict[str, Dict],
+                    mwe_types: List[str],
+                    df: pandas.DataFrame,
+                    text_column: str,
+                    am_threshold: float,
+                    only_mwes: bool,
+                    lower_case: bool) -> pandas.DataFrame:
     """Hyphenates the compounds in the corpus so that they are treated as a single token by downstream applications.
 
     Args:
-        
-        path_to_nns (string): Path to the ranked list of compounds
-        df (pd.FataFrame): DataFrame comprising training data with a text column
-        text_column (string): Text (content) column of df
-        am_threshold (float): AM threshold above which the compounds are selected for replacement
-        only_compounds (bool): Whether or not keep only compounds and drop the rest of the text
+        mwe_dict: Dictionary of MWE type for each type, unique MWEs to their count. E.g. {'NC': {'mwe1': 10}}.
+        mwe_types: Types of MWEs to be replaced. Can be any of [NC, JNC].
+        df: DataFrame comprising training data with a tokenized text column.
+        text_column: Text (content) column of df.
+        am_threshold: MWEs with an am greater than or equal to this threshold are selected for replacement.
+        only_mwes: Whether or not keep only MWEs and drop the rest of the text.
+        lower_case: Whether or not lowercase the sentence before replacing MWEs. 
 
     Returns:
         df (pandas.FataFrame)
-
     """
+    good_mwes = set()
+    for t in mwe_types:
+        pmi_sorted_dict = mwe_dict[t]
+        logger.info(f'Number of all MWEs of type {t}: {len(pmi_sorted_dict)}')
+        for k,v in pmi_sorted_dict:
+            if v >= am_threshold:
+                good_mwes.add(k)
+            else:
+                break
+        logger.info('Number of MWEs to be replaced in corpus based on the association threshold: %d' %len(good_mwes))
 
-    json_file = open(path_to_compounds)
-    json_str = json_file.read()
-
-    pmi_ord_dict = json.loads(json_str, object_pairs_hook=collections.OrderedDict)
-    print('Num of all compounds: %d' %len(pmi_ord_dict))
-    good_nns = set()
-    
-    # Current format of pmi_ord_dict: [['victor jones', [14.72, 0.96]], ...]
-    # pmi_ord_dict[i][1][1]: npmi  | pmi_ord_dict[i][1][0]: pmi   |  pmi_ord_dict[i][0]: compound
-    i = 0
-    while  float(pmi_ord_dict[i][1][1]) > am_threshold:
-        good_nns.add(pmi_ord_dict[i][0])
-        i += 1
-    
-    print('Number of compounds to be replaced in corpus: %d' %len(good_nns))
-
+    logger.info('Replacing compounds in text')
     new_text = []
     for sent in tqdm.tqdm(df[text_column]):
-        # Extract bigrams from text
         sent = (sent.lower() if lower_case else sent)
         bigrams = get_ngrams(sent, 2)
-        
-        if only_compounds:
+        if only_mwes:
             tmp = ''
             for bg in bigrams:
-                if bg in good_nns:
+                if bg in good_mwes:
                     tmp += (bg.split(' ')[0]+'-'+bg.split(' ')[1]+' ')
             if tmp != '':
                 sent = tmp.strip()
         else:
             for bg in bigrams:
-                if bg in good_nns:
+                if bg in good_mwes:
                     sent = re.sub(bg, bg.split(' ')[0]+'-'+bg.split(' ')[1], sent)
         new_text.append(sent)
     df[text_column] = new_text
     return df
 
 
-def get_ngrams(sentence, n):
+def get_ngrams(sentence: str, n: int) -> List:
     """Extracts n-grams from sentence.
     
     Args:
-        sentence (string)
-        n (int)
-        lower(bool)
+        sentence: Input sentence from which n-grams are to be extracted.
+        n: Size of n-grams.
 
     Returns:
-        ngrams(list)
+        ngrams: List of extracted n-grams.
     """
-    #TODO handle excecases when sent is nan, here and in the calling function
-    tokens = sentence.split(" ")
     ngrams = []
+    try:
+        tokens = sentence.split(" ")
+    except Exception as E:
+        logger.error(E)
+        logger.error(f'Input sentence {sentence} cannot be spilitted around space. No n-gram is extracted.')
+        return ngrams
     for i in range(len(tokens)-n+1):
         ngrams.append(' '.join(tokens[i:i+n]))
     return ngrams

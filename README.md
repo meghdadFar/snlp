@@ -105,7 +105,7 @@ The above yields a report in HTML, with interactive `plotly` plots as can be see
 
 Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
-You can use `snlp` to identify fixed noun-noun and adjective-nount expressions in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first import required libraries: 
+You can use `snlp` to identify fixed noun-noun and adjective-nount expressions in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first import `get_counts` and `get_ams` functions: 
 Run `get_counts` to extract compounds and their corresponding frequencies and then run `get_ams` to calculate their corresponding *PMI* and rank them based on their *PMI* value:
 
 ```python
@@ -115,7 +115,7 @@ get_counts(imdb_train, text_column='text', output_dir='tmp/')
 get_ams(path_to_counts='tmp/')
 ```
 
-Running the above yields two sets of ranked *noun-noun* and *adjective-noun* expressions that can be found in `output_dir` respectively under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked fixed expressions can be seen below:
+Running the above yields two ranked sets of  *noun-noun* and *adjective-noun* compounds that can be found in `output_dir` respectively under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked compounds can be seen below:
 
 ```
 nn_pmi.json
