@@ -31,7 +31,6 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
                 tmp_compound_dict[compound] = [round(npmi, 2)]
         else:
             tmp_compound_dict[compound] = [0.0]
-
     sorted_compound_dict = dict(sorted(tmp_compound_dict.items(), key=lambda e: e[1], reverse=True))
     return sorted_compound_dict
 
