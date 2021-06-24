@@ -3,8 +3,7 @@ import json
 from typing import List
 import pandas
 from snlp.mwes.am import calculate_am
-from snlp.mwes.counter import get_counts
-from snlp.mwes.mwe_utils import replace_compunds
+from snlp.mwes.mwe_utils import update_corpus, get_counts
 from snlp import logger
 
 
@@ -41,6 +40,7 @@ class MWE(object):
 
         Args:
             None
+
         Returns:
             None
         """
@@ -57,7 +57,6 @@ class MWE(object):
         except Exception as e:
             logger.error(e)
             raise e
-
     def extract_mwes(self, am: str='pmi') -> None:
         """
         Args:
@@ -69,7 +68,6 @@ class MWE(object):
         """
         with open(self.count_file, "r") as file:
             count_data = json.load(file)
-
         mwe_am_dict = calculate_am(count_data=count_data, am=am, mwe_types=self.mwe_types)
         try:
             os.mkdir(self.mwe_dir)
@@ -98,7 +96,6 @@ class MWE(object):
         """
         if not output_path:
             output_path = os.path.join(self.output_dir,'text_mwe_repl.csv')
-            
         try:
             with open(self.mwe_file, "r") as file:
                 mwe_type_mwe_am = json.load(file)
@@ -106,15 +103,13 @@ class MWE(object):
             logger.error(e)
             logger.error(f"Make sure you have previously run extract_mwes() and {self.mwe_file} file was successfully created.")
             raise e
-        
-        new_df = replace_compunds(mwe_type_mwe_am,
-                                  mwe_types=self.mwe_types,
-                                  df=self.df, 
-                                  am_threshold=am_threshold,
-                                  only_mwes=only_mwes,
-                                  lower_case=lower_case,
-                                  text_column=self.text_col)
-
+        new_df = update_corpus(mwe_type_mwe_am,
+                            mwe_types=self.mwe_types,
+                            df=self.df, 
+                            am_threshold=am_threshold,
+                            only_mwes=only_mwes,
+                            lower_case=lower_case,
+                            text_column=self.text_col)
         new_df.to_csv(output_path, sep='\t')
 
         

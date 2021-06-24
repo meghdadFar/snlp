@@ -1,14 +1,5 @@
-from typing import List, Dict
-import collections
-import json
+from typing import Dict
 import math
-import os
-
-
-"""
-TODO:
-    1. Include SDMA
-"""
 
 
 def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_words: int, normalize: bool= False) -> Dict[str, float]:
