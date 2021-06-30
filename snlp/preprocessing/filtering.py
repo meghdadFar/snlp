@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import plotly.express as px
 from scipy.stats import zscore
@@ -27,6 +26,7 @@ class RedunWords(object):
 
         Args:
             None
+
         Returns:
             token_score_dict: Dictionary of tokens to their score
         """
@@ -37,10 +37,10 @@ class RedunWords(object):
             idf = vectorizer.idf_
             token_score_dict = dict(zip(vectorizer.get_feature_names(), idf))
         else:
-            raise ValueError(f'Currently, the only available method is idf but you have specified {method}')
+            raise ValueError(f'Currently, the only available method is idf but you have specified {self.method}')
         return token_score_dict
 
-    def get_redundant_terms(self, z=3, manual=False, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8}):
+    def get_redundant_terms(self, z=3, manual=False, manual_thresholds: dict={'lower_threshold':-1, 'upper_threshold': -8}):
         """Create a filter set by identifying words with anomalous statistics.
 
         Args:
@@ -51,11 +51,11 @@ class RedunWords(object):
             u_idf: Upper cut-off threshold for IDF (inclusive).
 
         Returns:
-            filter_set (set): Set of filter words.
+            redundant_word_set (set): Set of redundant words.
         """
         token_score_dict = self._get_scores()
         if not manual:
-            redundant_word_set = self._redundant_terms_zscore(token_score_dict=token_score_dict, zscore=z)
+            redundant_word_set = self._redundant_terms_zscore(token_score_dict=token_score_dict, z_value=z)
         else:
             redundant_word_set = self._redundant_terms(token_score_dict=token_score_dict,
                                             lower_threshold=manual_thresholds['lower_threshold'],
@@ -94,12 +94,12 @@ class RedunWords(object):
                 redundant_terms.add(sl[i][0])
         return redundant_terms
 
-    def _redundant_terms_zscore(self, token_score_dict, zscore):
+    def _redundant_terms_zscore(self, token_score_dict, z_value):
         """Identify redundant terms by looking at the provided Z-score.
 
         Args:
             token_metric_dict: Dictionary of tokens to their metric.
-            zscore: Words with a Z-score above this value are considered redundant.
+            z_value: Words with a Z-score above this value are considered redundant.
 
         Returns:
             redundant_terms: Set of redundant terms.
@@ -115,7 +115,7 @@ class RedunWords(object):
         idf_df["zscore"] = z
         redundant_terms = set()
         for i in range(len(idf_df)):
-            if idf_df.iloc[i]["zscore"] <= -zscore or idf_df.iloc[i]["zscore"] >= zscore:
+            if idf_df.iloc[i]["zscore"] <= -z_value or idf_df.iloc[i]["zscore"] >= z_value:
                 redundant_terms.add(idf_df.iloc[i]["token"])
         return redundant_terms
 
@@ -129,10 +129,21 @@ class RedunWords(object):
         """
         token_score_dict = self._get_scores()
         scores = [v for k,v in token_score_dict.items()]
-        fig = px.histogram(scores, x=self.method, marginal="rug")
+        # l = len(scores)
+        # print(l)
+        # print(scores[l-100:l])
+        score_name = f'{self.method} scores'
+        scores_df = pd.DataFrame(scores, columns=[score_name])
+        fig = px.histogram(scores_df, x=score_name, marginal='rug', color_discrete_sequence=['magenta'])
         fig.show()
 
 
+if __name__ == "__main__":
+    imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+    rw = RedunWords(imdb_train["text"])
+    rw.show_plot()
+    red_words = rw.get_redundant_terms()
+    print(red_words)
 
 
 # def filter_text(text, filter_set):
