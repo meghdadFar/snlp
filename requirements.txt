@@ -4,3 +4,4 @@ scipy==1.4.1
 nltk==3.5
 tqdm==4.45.0
 wordcloud==1.7.0
+plotly==5.1.0

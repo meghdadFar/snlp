@@ -1,13 +1,14 @@
 import re
 from nltk import word_tokenize
+from typing import Set, Dict
 
 
 def clean_text(
     text: str,
     keep_pattern: str = "[a-zA-Z0-9!.,?]",
-    drop_patterns: set(str) = set([]),
-    replace: dict = {},
-    maxlen: (int) = 15,
+    drop_patterns: Set[str]=set([]),
+    replace: Dict = {},
+    maxlen: int = 15,
 ) -> str:
     """Tokenize and clean text, by matching it against keep_pattern and droping and replacing provided patterns.
 

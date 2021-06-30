@@ -1,24 +1,33 @@
-import setuptools
+# -*- coding: utf-8 -*-
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+import os
 
-setuptools.setup(
+from setuptools import setup, find_packages
+
+if os.path.exists("requirements.txt"):
+    with open("requirements.txt") as fh:
+        requirements = [r for r in fh.read().split("\n") if ";" not in r]
+else:
+    requirements = []
+
+if os.path.exists("requirements.txt"):
+    with open("README.md", "r") as fh:
+        long_description = fh.read()
+else:
+    long_description = "Description could not be found."
+
+setup(
     name="snlp",
-    version="0.0.9",
+    version='0.1.0',
     author="meghdadFar",
     author_email="meghdad.farahmand@gmail.com",
     description="Statistical NLP",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/meghdadFar/snlp",
-    packages=setuptools.find_packages(),
-    install_requires = ['wordcloud==1.7.0'],
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=requirements,
     scripts=['bin/downloads.py'],
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
     python_requires='>=3.7',
 )

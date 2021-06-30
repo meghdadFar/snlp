@@ -13,7 +13,8 @@ class RedunWords(object):
         """"Class to identify and represent a set of redundant words.
 
         Args:
-            documents:
+            documents: An iterable which yields str.
+            method: Method of creating the set of redundant words. Can be either of ['idf'].
 
         Returns:
             None
@@ -44,7 +45,7 @@ class RedunWords(object):
 
         Args:
             documents: An iterable which yields either str, unicode or file objects.
-            method: Method of creating the set of redundant words. Can be either of ['idf'].
+            manual: Whether or not select redundant words using manual thresholds.
             z: Words with a Z-score above this value are considered redundant. Default is 3.
             l_idf: Lower cut-off threshold for IDF (inclusive). Used only when 
             u_idf: Upper cut-off threshold for IDF (inclusive).

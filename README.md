@@ -140,9 +140,20 @@ The main idea behind the extraction of fixed Expressions is to treat them as a s
 
 Redundant words carry little value and can exacerbate the results of many NLP tasks. To solve this issue, traditionally, a pre-defined list of words, called stop words was defined and removed from the data. However, creating such a list is not optimal because in addition to being a rule-based and manual approach which does not generalize well, one has to assume that there is a uneversal list of stop words that represents highly low entropy words for all corpora, which is a very strong assumption and not necessarily a true assumption in many cases.
 
-To solve this issue, one can use a purely sttistical solution which is completely automatic and does not make any universal assumption. It only focuses on the corpus at hand. Words can be represented with various statistics. For instance, they can be represented by term frequency (tf) or inverse document ferquency (idf). Terms with anomalous (very high or very low) statistics usually carry little value.
-SNLP enables you to identify such terms in a completely automatic fashion. While the solution is complex behind the scene, as it firsts needs to gaussanizing the distribution of specified statistics (i.e. tf or ifd), and then identifying words with anomalous values on the gaussanized distribution by looking at their z-score, the API is very easy and convinient to use. The example below shows how you can use this API:
+To solve this issue, one can use a purely sttistical solution which is completely automatic and does not make any universal assumption. It focuses only on the corpus at hand. Words can be represented with various statistics. For instance, they can be represented by their term frequency (tf) or inverse document ferquency (idf). It can be then interpreted that terms with anomalous (very high or very low) statistics carry little value and can be discardrd.
+SNLP enables you to identify such terms in an automatic fashion. The solution might seem complex behind the scene, as it firsts needs calculate certain statistics, gaussanize the distribution of the specified statistics (i.e. tf or ifd), and then identify the terms with anomalous values on the gaussanized distribution by looking at their z-score. However, the API is easy and convinient to use. The example below shows how you can use this API:
+
+```python
+
+### Create a set of redundant words
 
 
+#### Filer the corpus based on the created set
+
+# redundant_terms must be a list of words
+# text must be a list of words
+res = " ".join([t for t in text if t not in redundant_terms])
+
+```
 
 
