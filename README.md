@@ -145,15 +145,28 @@ SNLP enables you to identify such terms in an automatic fashion. The solution mi
 
 ```python
 
-### Create a set of redundant words
+from snlp.preprocessing import RedunWords
+
+imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+rw = RedunWords(imdb_train["text"], method='idf')
+
+# Let the program to automatically identify a set of redundant words
+red_words = rw.get_redundant_terms()
 
 
-#### Filer the corpus based on the created set
+# Alternatively, you can manually set cut-off threshold for the specified score, by setting the manual Flag to True and specifying lower and upper cut-off thresholds. 
+red_words = rw.get_redundant_terms(manual=True, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8})
 
-# redundant_terms must be a list of words
+# In order to get a 
+# better undertanding of the distribution of the scores before setting the thresholds, you can 
+# run show_plot() method from RedunWords class to see this distribution:
+rw.show_plot()
+
+
+
+# When red_words is ready, you can filter the corpus:
 # text must be a list of words
-res = " ".join([t for t in text if t not in redundant_terms])
-
+res = " ".join([t for t in text if t not in red_words])
 ```
 
 
