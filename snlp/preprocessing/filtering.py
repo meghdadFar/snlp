@@ -1,19 +1,45 @@
 import os
 import pandas as pd
+import plotly.express as px
 from scipy.stats import zscore
 from snlp import logger
 from snlp import gaussianize
 from sklearn.feature_extraction.text import TfidfVectorizer
-from typing import Set
+from typing import Set, Dict
 
 
 class RedunWords(object):
-    """"Class to identify and represent a set of redundant words."""
-    def __init__(self, documents):
-        self.documents = documents
-        pass
+    def __init__(self, documents, method="idf"):
+        """"Class to identify and represent a set of redundant words.
 
-    def get_redundant_terms(self, method="idf", z=3, manual=False, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8}):
+        Args:
+            documents:
+
+        Returns:
+            None
+        """
+        self.documents = documents
+        self.method = method
+    
+    def _get_scores(self) -> Dict:
+        """Helper method to generate statistical scores using the technique specified by self.method arg. 
+
+        Args:
+            None
+        Returns:
+            token_score_dict: Dictionary of tokens to their score
+        """
+        token_score_dict = {}
+        if self.method == 'idf':
+            vectorizer = TfidfVectorizer(min_df=1)
+            X = vectorizer.fit_transform(self.documents)
+            idf = vectorizer.idf_
+            token_score_dict = dict(zip(vectorizer.get_feature_names(), idf))
+        else:
+            raise ValueError(f'Currently, the only available method is idf but you have specified {method}')
+        return token_score_dict
+
+    def get_redundant_terms(self, z=3, manual=False, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8}):
         """Create a filter set by identifying words with anomalous statistics.
 
         Args:
@@ -26,15 +52,7 @@ class RedunWords(object):
         Returns:
             filter_set (set): Set of filter words.
         """
-        token_score_dict = {}
-        if method == 'idf':
-            vectorizer = TfidfVectorizer(min_df=1)
-            X = vectorizer.fit_transform(self.documents)
-            idf = vectorizer.idf_
-            token_score_dict = dict(zip(vectorizer.get_feature_names(), idf))
-        else:
-            raise ValueError(f'Currently, the only available method is idf but you have specified {method}')
-
+        token_score_dict = self._get_scores()
         if not manual:
             redundant_word_set = self._redundant_terms_zscore(token_score_dict=token_score_dict, zscore=z)
         else:
@@ -100,47 +118,58 @@ class RedunWords(object):
                 redundant_terms.add(idf_df.iloc[i]["token"])
         return redundant_terms
 
-    def _create_subplots(self, scores):
-        """ Creates subplots corresponding to the histogram of scores. 
+    def show_plot(self) -> None:
+        """ Create a histogram for the scores to help identify the cut-off threshold.
+
+        Args:
+            scores: 
+        Returns:
+            None
         """
-        raise NotImplementedError
+        token_score_dict = self._get_scores()
+        scores = [v for k,v in token_score_dict.items()]
+        fig = px.histogram(scores, x=self.method, marginal="rug")
+        fig.show()
 
 
-def filter_text(text, filter_set):
-    """
-    Args:
-        text (list): tokenized text
-        filterset (set): Set of filter words
-    """
-    if not isinstance(text, list):
-        raise TypeError("Input must be a list.")
-    if len(text) == 0:
-        raise ValueError("Input must be a non empty list.")
-    res = " ".join([t for t in text if t not in filter_set])
-    return res
 
 
-def save_filterset_tofile(filter_set, path):
-    with open(path, "w") as f:
-        for word in filter_set:
-            f.write(word + "\n")
-    f.close()
+# def filter_text(text, filter_set):
+#     """
+#     Args:
+#         text (list): tokenized text
+#         filterset (set): Set of filter words
+#     """
+#     if not isinstance(text, list):
+#         raise TypeError("Input must be a list.")
+#     if len(text) == 0:
+#         raise ValueError("Input must be a non empty list.")
+#     res = " ".join([t for t in text if t not in filter_set])
+#     return res
 
 
-def create_filterset_map(p2_raw_train_df, output_dir, zs=[3]):
-    original_df = pd.read_csv(p2_raw_train_df, sep="\t", names=["label", "text"])
-    wf = RedunWords()
-    z_map = {}
-    for z in zs:
-        filter_words = wf.get_redundant_terms(original_df.text, method="automatic", z=z)
-        save_filterset_tofile(filter_words, os.path.join(output_dir, "z" + str(z) + "_filterset.txt"))
-        z_map[z] = filter_words
-    return z_map
+
+# def save_filterset_tofile(filter_set, path):
+#     with open(path, "w") as f:
+#         for word in filter_set:
+#             f.write(word + "\n")
+#     f.close()
 
 
-def create_filterset(p2_raw_train_df, output_dir):
-    original_df = pd.read_csv(p2_raw_train_df, sep="\t", names=["label", "text"])
-    wf = RedunWords()
-    filter_words = wf.get_redundant_terms(original_df.text, method="manual", z=None)
-    save_filterset_tofile(filter_words, os.path.join(output_dir, "manual_filterset.txt"))
-    return filter_words
+# def create_filterset_map(p2_raw_train_df, output_dir, zs=[3]):
+#     original_df = pd.read_csv(p2_raw_train_df, sep="\t", names=["label", "text"])
+#     wf = RedunWords()
+#     z_map = {}
+#     for z in zs:
+#         filter_words = wf.get_redundant_terms(original_df.text, method="automatic", z=z)
+#         save_filterset_tofile(filter_words, os.path.join(output_dir, "z" + str(z) + "_filterset.txt"))
+#         z_map[z] = filter_words
+#     return z_map
+
+
+# def create_filterset(p2_raw_train_df, output_dir):
+#     original_df = pd.read_csv(p2_raw_train_df, sep="\t", names=["label", "text"])
+#     wf = RedunWords()
+#     filter_words = wf.get_redundant_terms(original_df.text, method="manual", z=None)
+#     save_filterset_tofile(filter_words, os.path.join(output_dir, "manual_filterset.txt"))
+#     return filter_words
