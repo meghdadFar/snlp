@@ -7,17 +7,17 @@
 
 Statistical NLP (SNLP) is a practical package with statisical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
-## Features
+# Features
 - Text cleaning 
 - Text analysis
 - Extraction of Fixed (Idiosyncratic) Expressions
 - Identification of statistically redundant words for filtering
 
-### Upcoming Features
+## Upcoming Features
 - Anamoly Detection
 - Identifying non-compositional compouds such as *red tape* and *brain drain* in the corpus
 
-## Usage
+# Usage
 
 Install the package:
 
@@ -25,7 +25,7 @@ Install the package:
 
 See the description of different functionalities with worked examples below. 
 
-### **Text Cleaning**
+## **Text Cleaning**
 
 *snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
 Using, `clean_text`, you can choose what pattern to accept via `keep_pattern` argument, 
@@ -55,7 +55,7 @@ imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_pat
 
 `clean_text` returns a tokenized text. 
 
-### **Text Analysis**
+## **Text Analysis**
 
 *snlp* provides an easy to use function (`text_analysis.generate_report`) for analyzing text with an extensive analysis report. `text_analysis.generate_report` 
 receives as input a dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for upto 4
@@ -91,15 +91,17 @@ generate_report(df=imdb_train,
 
 The above yields a report in HTML, with interactive `plotly` plots as can be seen in example screenshots below. 
 
-![annotation1](https://github.com/meghdadFar/snlp/blob/master/resources/images/annotation1.png)
-<!-- ![text](https://github.com/meghdadFar/snlp/blob/master/resources/images/text.png) -->
-![toolbar](https://github.com/meghdadFar/snlp/blob/master/resources/images/toolbar.png)
-![zoom](https://github.com/meghdadFar/snlp/blob/master/resources/images/zoom.png)
-<!-- ![labels](https://github.com/meghdadFar/snlp/blob/master/resources/images/labels.png) -->
-![wc](https://github.com/meghdadFar/snlp/blob/master/resources/images/wc.png)
+![annotation1](/assets/annotation1.png)
 
+ You can easily zoom in any part of the plot to a have a closer look:
 
-### **Extraction of Fixed (Idiosyncratic) Expressions**
+![zoom](/assets/zoom.png)
+
+You can get word clouds for different part of speech tags, as can be seen in the below example where word clouds for nouns, adjectives and verbs are rendered:
+
+![wc](/assets/wc.png)
+
+## **Extraction of Fixed (Idiosyncratic) Expressions**
 
 Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
@@ -136,7 +138,7 @@ global warming
 
 The main idea behind the extraction of fixed Expressions is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using `snlp.mwe.replace_compunds` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. 
 
-### **Identification of Statistically Redundant Words**
+## **Identification of Statistically Redundant Words**
 
 Redundant words carry little value and can exacerbate the results of many NLP tasks. To solve this issue, traditionally, a pre-defined list of words, called stop words was defined and removed from the data. However, creating such a list is not optimal because in addition to being a rule-based and manual approach which does not generalize well, one has to assume that there is a uneversal list of stop words that represents highly low entropy words for all corpora, which is a very strong assumption and not necessarily a true assumption in many cases.
 
@@ -144,29 +146,35 @@ To solve this issue, one can use a purely sttistical solution which is completel
 SNLP enables you to identify such terms in an automatic fashion. The solution might seem complex behind the scene, as it firsts needs calculate certain statistics, gaussanize the distribution of the specified statistics (i.e. tf or ifd), and then identify the terms with anomalous values on the gaussanized distribution by looking at their z-score. However, the API is easy and convinient to use. The example below shows how you can use this API:
 
 ```python
-
 from snlp.preprocessing import RedunWords
 
 imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 rw = RedunWords(imdb_train["text"], method='idf')
+```
 
-# Let the program to automatically identify a set of redundant words
+Let the program automatically identify a set of redundant words:
+
+```python
 red_words = rw.get_redundant_terms()
+```
 
 
-# Alternatively, you can manually set cut-off threshold for the specified score, by setting the manual Flag to True and specifying lower and upper cut-off thresholds. 
+Alternatively, you can manually set cut-off threshold for the specified score, by setting the manual Flag to True and specifying lower and upper cut-off thresholds. 
+```python
 red_words = rw.get_redundant_terms(manual=True, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8})
+```
 
-# In order to get a 
-# better undertanding of the distribution of the scores before setting the thresholds, you can 
-# run show_plot() method from RedunWords class to see this distribution:
+In order to get a better undertanding of the distribution of the scores before setting the thresholds, you can run `show_plot()` method from `RedunWords` class to see this distribution:
+
+```python
 rw.show_plot()
+```
 
+When red_words is ready, you can filter the corpus:
 
-
-# When red_words is ready, you can filter the corpus:
+```python
 # text must be a list of words
-res = " ".join([t for t in text if t not in red_words])
+res = " ".join([t for t in text if t not in redundant_terms])
 ```
 
 
