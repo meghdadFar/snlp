@@ -40,7 +40,7 @@ class RedunWords(object):
             raise ValueError(f'Currently, the only available method is idf but you have specified {self.method}')
         return token_score_dict
 
-    def get_redundant_terms(self, z=3, manual=False, manual_thresholds: dict={'lower_threshold':-1, 'upper_threshold': -8}):
+    def get_redundant_terms(self, z=3, manual=False, manual_thresholds: dict={'lower_threshold':-1, 'upper_threshold': -1}):
         """Create a filter set by identifying words with anomalous statistics.
 
         Args:

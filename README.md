@@ -8,14 +8,13 @@
 Statistical NLP (SNLP) is a practical package with statisical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
 # Features
-- Text cleaning 
-- Text analysis
-- Extraction of Fixed (Idiosyncratic) Expressions
-- Identification of statistically redundant words for filtering
+- [Text Cleaning](#text-cleaning)
+- [Text Analysis](#text-analysis)
+- [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
+- [Identification of Statistically Redundant Words](#identification-of-statistically-redundant-words)
 
 ## Upcoming Features
-- Anamoly Detection
-- Identifying non-compositional compouds such as *red tape* and *brain drain* in the corpus
+- Identification of non-compositional expressions such as *red tape* and *brain drain*
 
 # Usage
 
@@ -101,7 +100,7 @@ You can get word clouds for different part of speech tags, as can be seen in the
 
 ![wc](/assets/wc.png)
 
-## **Extraction of Fixed (Idiosyncratic) Expressions**
+## **Extraction of Multiword Expressions**
 
 Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
