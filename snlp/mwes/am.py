@@ -1,8 +1,10 @@
-from typing import Dict
+from typing import Dict, List
 import math
 
 
-def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_words: int, normalize: bool= False) -> Dict[str, float]:
+def calculate_pmi(
+    compound_dict: dict, word_dic: dict, num_compound: int, num_words: int, normalize: bool = False
+) -> Dict[str, float]:
     """Calculate Pointwise Mutual Information between the two words of every word pair in nn_dict.
 
     Args:
@@ -10,7 +12,7 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
         word_dic: Dictionary of words and their count.
         num_compound: Number of compounds.
         num_words: Number of words.
-        normalize: Whether or not normalize the pmi score. Normalized pmi is referred to as npmi. 
+        normalize: Whether or not normalize the pmi score. Normalized pmi is referred to as npmi.
 
     Returns:
         sorted_compound_dict: Dictionary of compounds and their pmi/npmi values, sorted wrt their pmi/npmi.
@@ -35,36 +37,37 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
     return sorted_compound_dict
 
 
-def calculate_am(count_data: dict, 
-                am: str,
-                mwe_types) -> Dict[str, Dict]:
+def calculate_am(count_data: dict, am: str, mwe_types: List[str]) -> Dict[str, Dict]:
     """Read the counts from path_to_counts and for each compound calculates the measure specified by am.
 
     Args:
-        count_data: A dictionary that contains different MWE types and their counts. 
+        count_data: A dictionary that contains different MWE types and their counts.
         am: Association measure to be used in order to extract MWEs. Can be any of [pmi, npmi]
+        mwe_types: Types of MWEs. Can be any of [NC, JNC].
 
     Returns:
-        None
+        res: Dictionary of MWE type to their individual MWE to its score dictionary.
     """
     res = {}
-    num_words = sum(count_data['WORDS'].values())
+    num_words = sum(count_data["WORDS"].values())
     if am == "pmi":
         for mt in mwe_types:
-            compound_dict_tmp = calculate_pmi(compound_dict=count_data[mt],
-                                word_dic=count_data['WORDS'],
-                                num_compound=sum(count_data[mt].values()),
-                                num_words=num_words,
-                                normalize=False
-                                )
-            res[mt]=compound_dict_tmp
+            compound_dict_tmp = calculate_pmi(
+                compound_dict=count_data[mt],
+                word_dic=count_data["WORDS"],
+                num_compound=sum(count_data[mt].values()),
+                num_words=num_words,
+                normalize=False,
+            )
+            res[mt] = compound_dict_tmp
     elif am == "npmi":
         for mt in mwe_types:
-            compound_dict_tmp = calculate_pmi(compound_dict=count_data[mt],
-                                word_dic=count_data['WORDS'],
-                                num_compound=sum(count_data[mt].values()),
-                                num_words=num_words,
-                                normalize=True
-                                )
-            res[mt]=compound_dict_tmp
-    return res
+            compound_dict_tmp = calculate_pmi(
+                compound_dict=count_data[mt],
+                word_dic=count_data["WORDS"],
+                num_compound=sum(count_data[mt].values()),
+                num_words=num_words,
+                normalize=True,
+            )
+            res[mt] = compound_dict_tmp
+    return mwe_types
