@@ -1,2 +1,2 @@
-from snlp.mwes.am import calculate_am, get_counts
-from snlp.mwes.update_corpus import replace_compunds
+from snlp.mwes.mwe_utils import replace_mwes
+from snlp.mwes.mwe import MWE

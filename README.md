@@ -104,21 +104,25 @@ You can get word clouds for different part of speech tags, as can be seen in the
 
 Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
-You can use `snlp` to identify fixed noun-noun and adjective-nount expressions in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first import `get_counts` and `get_ams` functions: 
-Run `get_counts` to extract compounds and their corresponding frequencies and then run `get_ams` to calculate their corresponding *PMI* and rank them based on their *PMI* value:
+You can use `snlp` to identify different types of MWEs in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first create an instance of `MWE` class:
+
 
 ```python
-from snlp.mwes import get_counts, get_ams
-
-get_counts(imdb_train, text_column='text', output_dir='tmp/')
-get_ams(path_to_counts='tmp/')
+from snlp.mwes import MWE
+mwe = MWE(df=imdb_train, text_column='text')
 ```
 
-Running the above yields two ranked sets of  *noun-noun* and *adjective-noun* compounds that can be found in `output_dir` respectively under `nn_pmi.json` and `jn_pmi.json`. Some examples from the top of ranked compounds can be seen below:
+If the text in `text_column` is untokenized or poorly tokenized, `MWE` recognizes this issue at instantiation time and shows you a warning. If you already know that your text is not tokenized, you can run the same instantiation with flag `tokenize=True`. Next you need to run the method `build_count()`. Since creating counts is a time consuming procesure, it was implemented independently from `extract_mwes()` method that works on top of the output of `build_count()`. This way, you can run `build_count()` once to get the counts, and then run `extract_mwes()` several times with different parameters of your choice. 
+
+```python
+mwe.extract_mwes()
+```
+
+Running the above results in a json file, containing dictionary of mwe types defined in the `mwe_types` argument of `MWE`, to their association score (specified by `am` argument of `extract_mwes()`). Note that the MWEs in this json file are sorted with respect to their `am` score. All MWEs and their counts are stored in respective directories inside the `output_dir` argument of `MWE`. The default value is `tmp`. 
 
 ```
-nn_pmi.json
------------
+NOUN-NOUN COMPOUNDS
+-------------------
 jet li
 clint eastwood
 monty python
@@ -126,8 +130,8 @@ kung fu
 blade runner
 
 
-jn_pmi.json
------------
+ADJECTIVE-NOUN COMPOUNDS
+------------------------
 spinal tap
 martial arts
 citizen kane
@@ -135,7 +139,14 @@ facial expressions
 global warming
 ```
 
-The main idea behind the extraction of fixed Expressions is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using `snlp.mwe.replace_compunds` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. 
+An important use of extracting MWEs is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using the `replace_mwes` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. A worked example can be seen below:
+
+```python
+from snlp.mwes import replace_mwes
+new_df = replace_mwes(path_to_mwes='tmp/mwes/mwe_data.json', mwe_types=['NC', 'JNC'], df=imdb_train, text_column='text')
+new_df.to_csv('tmp/new_df.csv', sep='\t')
+```
+
 
 ## **Identification of Statistically Redundant Words**
 

@@ -1,24 +1,25 @@
+from logging import log
 from typing import Dict, List
+import json
 import pandas
 import re
 import tqdm
 from snlp import logger
 import nltk
 from collections import Counter
-from typing import List, Tuple
 
 
-def update_corpus(mwe_dict: Dict[str, Dict],
+def replace_mwes(path_to_mwes: str,
                 mwe_types: List[str],
                 df: pandas.DataFrame,
                 text_column: str,
-                am_threshold: float,
-                only_mwes: bool,
-                lower_case: bool) -> pandas.DataFrame:
+                am_threshold: float=0.7,
+                only_mwes: bool=False,
+                lower_case: bool=False) -> pandas.DataFrame:
     """Hyphenates the mwes in the corpus so that they are treated as a single token by downstream applications.
 
     Args:
-        mwe_dict: Dictionary of MWE type for each type, unique MWEs to their count. E.g. {'NC': {'mwe1': 10}}.
+        path_to_mwes: Path to a json file that contains a dictionary of MWE type for each type, unique MWEs to their count. E.g. {'NC': {'mwe1': 10}}.
         mwe_types: Types of MWEs to be replaced. Can be any of [NC, JNC].
         df: DataFrame comprising training data with a tokenized text column.
         text_column: Text (content) column of df.
@@ -29,11 +30,16 @@ def update_corpus(mwe_dict: Dict[str, Dict],
     Returns:
         df (pandas.FataFrame)
     """
+    try:
+        with open(path_to_mwes, "r") as file:
+            mwe_type_mwe_am = json.load(file)
+    except Exception as e:
+        raise e
     good_mwes = set()
     for t in mwe_types:
-        pmi_sorted_dict = mwe_dict[t]
+        pmi_sorted_dict = mwe_type_mwe_am[t]
         logger.info(f'Number of all MWEs of type {t}: {len(pmi_sorted_dict)}')
-        for k,v in pmi_sorted_dict:
+        for k,v in pmi_sorted_dict.items():
             if v >= am_threshold:
                 good_mwes.add(k)
             else:
@@ -109,38 +115,38 @@ def get_counts(df: pandas.DataFrame, text_column: str, mwe_types: List[str]) -> 
             else:
                 res['WORDS'][k] = v
         for mt in mwe_types:
-            count = 0
-            mwes_count_dic = extract_mwes_from_sent(sent, mwe_types=mt)
+            mwes_count_dic = extract_mwes_from_sent(tokens, mwe_type=mt)
             for k, v in mwes_count_dic.items():
                 if k in res[mt]:
                     res[mt][k] += v
                 else:
                     res[mt][k] = v
-        return res
+    return res
 
 
-def extract_mwes_from_sent(tokens: List[str], type: str) -> Tuple(dict, dict, dict):
+def extract_mwes_from_sent(tokens: List[str], mwe_type: str) -> Dict:
     """Extract two-word noun compounds from tokenized input.
 
     Args:
-        tokens: A tokenized sentence.
-        type: Type of MWE. Any of [NC, JNC].
+        tokens: A tokenized sentence, i.e. list of tokens.
+        type: Type of MWE. Any of ['NC', 'JNC'].
 
     Returns:
         mwes_count_dic: Dictionary of compounds to their count.
     """
     if not isinstance(tokens, list):
-        raise TypeError("Input argument \"tokens\" must be a list of string.")
+        raise TypeError(f'Input argument "tokens" must be a list of string. Currently it is of type {type(tokens)} \
+            with a value of: {tokens}.')
     if len(tokens) == 0:
         return
     mwes = []
     postag_tokens = nltk.pos_tag(tokens)
     w1_pos_tags = []
     w2_pos_tags = []
-    if type == 'NC':
+    if mwe_type == 'NC':
         w1_pos_tags = ["NN", "NNS"]
         w2_pos_tags = ["NN", "NNS"]
-    elif type == 'JNC':
+    elif mwe_type == 'JNC':
         w1_pos_tags = ["JJ"]
         w2_pos_tags = ["NN", "NNS"]
     for i in range(len(postag_tokens) - 1):

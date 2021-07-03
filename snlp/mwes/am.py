@@ -25,12 +25,12 @@ def calculate_pmi(compound_dict: dict, word_dic: dict, num_compound: int, num_wo
             p_of_m = float(word_dic[w1w2[1]]) / float(num_words)
             pmi = math.log(p_of_c / (p_of_h * p_of_m))
             if not normalize:
-                tmp_compound_dict[compound] = [round(pmi, 2)]
+                tmp_compound_dict[compound] = round(pmi, 2)
             else:
                 npmi = pmi / float(-math.log(p_of_c))
-                tmp_compound_dict[compound] = [round(npmi, 2)]
+                tmp_compound_dict[compound] = round(npmi, 2)
         else:
-            tmp_compound_dict[compound] = [0.0]
+            tmp_compound_dict[compound] = 0.0
     sorted_compound_dict = dict(sorted(tmp_compound_dict.items(), key=lambda e: e[1], reverse=True))
     return sorted_compound_dict
 
@@ -48,8 +48,8 @@ def calculate_am(count_data: dict,
         None
     """
     res = {}
+    num_words = sum(count_data['WORDS'].values())
     if am == "pmi":
-        num_words = sum(count_data['WORDS'].values())
         for mt in mwe_types:
             compound_dict_tmp = calculate_pmi(compound_dict=count_data[mt],
                                 word_dic=count_data['WORDS'],
@@ -59,7 +59,6 @@ def calculate_am(count_data: dict,
                                 )
             res[mt]=compound_dict_tmp
     elif am == "npmi":
-        num_words = sum(count_data['WORDS'].values())
         for mt in mwe_types:
             compound_dict_tmp = calculate_pmi(compound_dict=count_data[mt],
                                 word_dic=count_data['WORDS'],
