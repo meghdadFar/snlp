@@ -20,7 +20,7 @@ Statistical NLP (SNLP) is a practical package with statisical tools for natural 
 
 Install the package:
 
-`pip3 install snlp`
+`pip install snlp`
 
 See the description of different functionalities with worked examples below. 
 
