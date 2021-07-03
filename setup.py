@@ -4,17 +4,17 @@ import os
 
 from setuptools import setup, find_packages
 
-if os.path.exists("requirements.txt"):
-    with open("requirements.txt") as fh:
-        requirements = [r for r in fh.read().split("\n") if ";" not in r]
-else:
-    requirements = []
-
-if os.path.exists("requirements.txt"):
-    with open("README.md", "r") as fh:
-        long_description = fh.read()
+if os.path.exists("README.md"):
+    with open("README.md", "r") as f:
+        long_description = f.read()
 else:
     long_description = "Description could not be found."
+
+if os.path.exists("requirements.txt"):
+    with open("requirements.txt") as f:
+        requirements = f.read().split("\n")
+else:
+    requirements = []
 
 setup(
     name="snlp",
