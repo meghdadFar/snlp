@@ -1,10 +1,9 @@
-from logging import log
 import os
-import shutil
-import json
-from typing import List
-from nltk.sem.logic import LogicalExpressionException
+import sys
 import pandas
+import json
+from pathlib import Path
+from typing import List
 from nltk import word_tokenize
 from snlp.mwes.am import calculate_am
 from snlp.mwes.mwe_utils import replace_mwes, get_counts
@@ -49,10 +48,8 @@ class MWE(object):
         self.count_file = os.path.join(self.count_dir, "count_data.json")
         self.mwe_dir = os.path.join(self.output_dir, "mwes")
         self.mwe_file = os.path.join(self.mwe_dir, "mwe_data.json")
-
-        if os.path.exists(self.output_dir):
-            shutil.rmtree(self.output_dir)
-        os.mkdir(self.output_dir)
+        
+        Path(self.output_dir).mkdir(exist_ok=True)
 
         if tokenize:
             logger.info('"tokenize" flag set to True. This might lead to a slow instantiation.')
@@ -81,9 +78,9 @@ class MWE(object):
             None
         """
         if self.df[self.text_col].shape[0] > 200:
-            tests = imdb_train["text"].sample(n=200).tolist()
+            tests = self.df[self.text_col].sample(n=200).tolist()
         else:
-            tests = imdb_train["text"].sample(frac=0.8).tolist()
+            tests = self.df[self.text_col].sample(frac=0.8).tolist()
         num_pass = 0
         for t in tests:
             if " ".join(word_tokenize(t)) == t:
@@ -93,7 +90,7 @@ class MWE(object):
                 f"It seems that the content of {self.text_col} in the input data frame is not (fully) tokenized.\nThis can lead to poor results. Consider re-instantiating your MWE instance with 'tokenize' flag set to True.\nNote that this might lead to a slower instantiation."
             )
 
-    def build_counts(self) -> None:
+    def build_counts(self, file_name: str=None) -> None:
         """Create various count files to be used by downstream methods 
         by calling snlp.mwes.counter.get_counts.
 
@@ -105,19 +102,30 @@ class MWE(object):
         """
         logger.info("Creating counts...")
         res = get_counts(df=self.df, text_column=self.text_col, mwe_types=self.mwe_types)
+        # Directory
         try:
-            os.mkdir(self.count_dir)
+            Path(self.count_dir).mkdir(exist_ok=True)
         except Exception as e:
             logger.error(e)
             raise e
-        try:
-            with open(self.count_file, "w") as file:
-                json.dump(res, file)
-        except Exception as e:
-            logger.error(e)
-            raise e
+        # File
+        if not file_name:
+            try:
+                with open(self.count_file, "w") as file:
+                    json.dump(res, file)
+            except Exception as e:
+                logger.error(e)
+                raise e
+        else:
+            try:            
+                with open(file_name, "w") as file:
+                    json.dump(res, file)
+            except Exception as e:
+                logger.error(e)
+                raise e
+            self.count_file = file_name
 
-    def extract_mwes(self, am: str = "pmi") -> None:
+    def extract_mwes(self, am: str = "pmi", file_name: str=None) -> None:
         """
         Args:
             mwe_types: Types of MWEs. Can be any of [NC, JNC]
@@ -130,17 +138,27 @@ class MWE(object):
             count_data = json.load(file)
         logger.info(f"Extracting {self.mwe_types} based on {am}")
         mwe_am_dict = calculate_am(count_data=count_data, am=am, mwe_types=self.mwe_types)
+        # Dir
         try:
-            os.mkdir(self.mwe_dir)
+            Path(self.mwe_dir).mkdir(exist_ok=True)
         except Exception as e:
             logger.error(e)
             raise e
-        try:
-            with open(self.mwe_file, "w") as file:
-                json.dump(mwe_am_dict, file)
-        except Exception as e:
-            logger.error(e)
-            raise e
+        # File
+        if not file_name:
+            try:
+                with open(self.mwe_file, "w") as file:
+                    json.dump(mwe_am_dict, file)
+            except Exception as e:
+                logger.error(e)
+                raise e
+        else:
+            try:            
+                with open(file_name, "w") as file:
+                    json.dump(mwe_am_dict, file)
+            except Exception as e:
+                logger.error(e)
+                raise e
 
 
 if __name__ == "__main__":

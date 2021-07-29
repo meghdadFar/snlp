@@ -412,7 +412,7 @@ def generate_report(
             else:
                 items_dic[t] = 1
 
-    def get_pos(tagged_tokens: List[Tuple(str, str)], goal_pos: str) -> List:
+    def get_pos(tagged_tokens: List[Tuple[str, str]], goal_pos: str) -> List:
         """Extracts goal_pos POS tags from tagged_tokens.
 
         Args:

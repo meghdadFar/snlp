@@ -70,4 +70,4 @@ def calculate_am(count_data: dict, am: str, mwe_types: List[str]) -> Dict[str, D
                 normalize=True,
             )
             res[mt] = compound_dict_tmp
-    return mwe_types
+    return res

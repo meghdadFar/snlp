@@ -35,7 +35,7 @@ Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/dat
 ```python
 from snlp.preprocessing import clean_text
 
-imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 
 # Let's only keep alphanumeric tokens as well as important punctuation marks:
 keep_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
@@ -52,7 +52,7 @@ maxlen=15
 imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_patterns, replace, maxlen,))
 ```
 
-`clean_text` returns a tokenized text. 
+Note that `clean_text` returns tokenized text. 
 
 ## **Text Analysis**
 
@@ -109,12 +109,14 @@ You can use `snlp` to identify different types of MWEs in your text leveraging s
 
 ```python
 from snlp.mwes import MWE
-mwe = MWE(df=imdb_train, text_column='text')
+my_mwe_types = ["NC", "JNC"]
+mwe = MWE(df=imdb_train, mwe_types=my_mwe_types, text_column='text')
 ```
 
-If the text in `text_column` is untokenized or poorly tokenized, `MWE` recognizes this issue at instantiation time and shows you a warning. If you already know that your text is not tokenized, you can run the same instantiation with flag `tokenize=True`. Next you need to run the method `build_count()`. Since creating counts is a time consuming procesure, it was implemented independently from `extract_mwes()` method that works on top of the output of `build_count()`. This way, you can run `build_count()` once to get the counts, and then run `extract_mwes()` several times with different parameters of your choice. 
+If the text in `text_column` is untokenized or poorly tokenized, `MWE` recognizes this issue at instantiation time and shows you a warning. If you already know that your text is not tokenized, you can run the same instantiation with flag `tokenize=True`. Next you need to run the method `build_count()`. Since creating counts is a time consuming procesure, it was implemented independently from `extract_mwes()` method that works on top of the output of `build_count()`. This way, you can get the counts which is a time consuming process once, and then run `extract_mwes()` several times with different parameters.
 
 ```python
+mwe.build_counts()
 mwe.extract_mwes()
 ```
 
