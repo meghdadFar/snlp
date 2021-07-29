@@ -153,7 +153,7 @@ class MWE(object):
                 logger.error(e)
                 raise e
         else:
-            try:            
+            try:
                 with open(file_name, "w") as file:
                     json.dump(mwe_am_dict, file)
             except Exception as e:
