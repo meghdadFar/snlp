@@ -1,5 +1,6 @@
 from typing import Dict, List
 import json
+import sys
 import pandas
 import re
 import tqdm
@@ -39,6 +40,10 @@ def replace_mwes(
         raise e
     good_mwes = set()
     for t in mwe_types:
+        logger.info(f'Replacing MWEs of type {t} in the corpus.')
+        if t not in mwe_type_mwe_am:
+            logger.error(f'MWEs of type {t} do not exist. Make sure the file containing MWEs in {path_to_mwes} includes type {t}')
+            sys.exit(1)
         pmi_sorted_dict = mwe_type_mwe_am[t]
         logger.info(f"Number of all MWEs of type {t}: {len(pmi_sorted_dict)}")
         for k, v in pmi_sorted_dict.items():

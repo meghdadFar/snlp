@@ -26,5 +26,5 @@ setup(
     include_package_data=True,
     install_requires=requirements,
     scripts=['bin/downloads.py'],
-    python_requires='==3.7',
+    python_requires='>=3.7',
 )
