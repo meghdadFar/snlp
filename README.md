@@ -18,7 +18,7 @@ Statistical NLP (SNLP) is a practical package with statistical tools for natural
 
 - **Entropy for Natural Language** Entropy has a wide range of applications in NLP. Recently, researchers have show that it can be used to improve the quality of conversational AI [[1]](#1) and text summarization [[2]](#2).
 
-- **Label Evaluation** Labeled datasets often come with certain level of human error. If not captured early on, this these errors will propagate to downstream machine learning models and hinder their quality rendering an otherwise well-performing model performs poorly.At model building and training time there is no easy way to identify if the error lies in the labels or the model itself. This often leads to spending a large amount of time trying to fix the problem. To avoid this, Label Evaluation features provides a set of functionalities to evaluate the labels and identify problematic ones based on measures of Inter Rater Agreement, and Correlations.
+- **Label Evaluation** Labeled datasets often come with certain level of human error. If not captured early on, this these errors will propagate to downstream machine learning models and hinder their quality rendering an otherwise well-performing model performs poorly. At model building and training time there is no easy way to identify if the error lies in the labels or the model itself. This often leads to spending a large amount of time trying to fix the problem. To avoid this, Label Evaluation features provides a set of functionalities to evaluate the labels and identify problematic ones based on measures of Inter Rater Agreement, and Correlations.
 
 
 # Usage
