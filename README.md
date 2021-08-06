@@ -8,13 +8,18 @@
 Statistical NLP (SNLP) is a practical package with statisical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
 # Features
-- [Text Cleaning](#text-cleaning)
 - [Text Analysis](#text-analysis)
 - [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
 - [Identification of Statistically Redundant Words](#identification-of-statistically-redundant-words)
+- [Text Cleaning](#text-cleaning)
 
 ## Upcoming Features
-- Identification of non-compositional expressions such as *red tape* and *brain drain*
+- **Identification of Non-compositional Expressions (e.g. *red tape* and *brain drain*)**. Non-compositional expressions have application in profanity detection, language understanding, and language generation.
+
+- **Entropy for Natural Language** Entropy has a wide range of applications in NLP. Recently, researchers have show that it can be used to improve the quality of conversational AI [[1]](#1) and text summarization [[2]](#2).
+
+- **Label Evaluation** Labeled datasets often come with certain level of human error. If not captured early on, this these errors will propagate to downstream machine learning models and hinder their quality rendering an otherwise well-performing model performs poorly.At model building and training time there is no easy way to identify if the error lies in the labels or the model itself. This often leads to spending a large amount of time trying to fix the problem. To avoid this, Label Evaluation features provides a set of functionalities to evaluate the labels and identify problematic ones based on measures of Inter Rater Agreement, and Correlations.
+
 
 # Usage
 
@@ -23,36 +28,6 @@ Install the package:
 `pip install snlp`
 
 See the description of different functionalities with worked examples below. 
-
-## **Text Cleaning**
-
-*snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
-Using, `clean_text`, you can choose what pattern to accept via `keep_pattern` argument, 
-what pattern to drop via `drop_patterns` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
-Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/data/sentiment/) as an example. A sample of this data can be found in `resources/data/imdb_train_sample.tsv`.
-
-
-```python
-from snlp.preprocessing import clean_text
-
-imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
-
-# Let's only keep alphanumeric tokens as well as important punctuation marks:
-keep_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
-
-# In this corpus, one can frequently see HTML tags such as `< br / >`. So let's drop them:
-drop_patterns={'< br / >'}
-
-# By skimming throw the text one can frequently see many patterns such as !!! or ???. Let's replace them:
-replace={'!!!':'!', '\?\?\?':'?'}
-
-# Finally, let's set the maximum length of a token to 15:
-maxlen=15
-
-imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_patterns, replace, maxlen,))
-```
-
-Note that `clean_text` returns tokenized text. 
 
 ## **Text Analysis**
 
@@ -189,4 +164,38 @@ When red_words is ready, you can filter the corpus:
 res = " ".join([t for t in text if t not in redundant_terms])
 ```
 
+## **Text Cleaning**
 
+*snlp* implements an easy to use and powerful function for cleaning up the text (`clean_text`). 
+Using, `clean_text`, you can choose what pattern to accept via `keep_pattern` argument, 
+what pattern to drop via `drop_patterns` argument, and what pattern to replace via `replace` argument. You can also specify the maximum length of tokens. 
+Let's use [Stanford's IMDB Sentiment Dataset](https://ai.stanford.edu/~amaas/data/sentiment/) as an example. A sample of this data can be found in `resources/data/imdb_train_sample.tsv`.
+
+
+```python
+from snlp.preprocessing import clean_text
+
+imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+
+# Let's only keep alphanumeric tokens as well as important punctuation marks:
+keep_pattern='^[a-zA-Z0-9!.,?\';:$/_-]+$'
+
+# In this corpus, one can frequently see HTML tags such as `< br / >`. So let's drop them:
+drop_patterns={'< br / >'}
+
+# By skimming throw the text one can frequently see many patterns such as !!! or ???. Let's replace them:
+replace={'!!!':'!', '\?\?\?':'?'}
+
+# Finally, let's set the maximum length of a token to 15:
+maxlen=15
+
+imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_patterns, replace, maxlen,))
+```
+
+Note that `clean_text` returns tokenized text. 
+
+
+## References
+<a id="1">[1]</a> R. Csaky et al. - Improving Neural Conversational Models with Entropy-Based Data Filtering - In Proceedings of ACL 2019 - Florence, Italy.
+
+<a id="2">[2]</a> Maxime Peyrard - A Simple Theoretical Model of Importance for Summarization - In Proceedings of ACL 2019 - Florence, Italy.
