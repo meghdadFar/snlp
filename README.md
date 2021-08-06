@@ -77,7 +77,7 @@ You can get word clouds for different part of speech tags, as can be seen in the
 
 ## **Extraction of Multiword Expressions**
 
-Identifying fixed expressions has application in a wide range of NLP tasks ranging from sentiment analysis to topic models and key-phrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
+Multiword Expressions (also known as collocations of fixed expressions) are phrases that function as a single semantic unit E.g. *swimming pool* and *climate change*. Multiword Expressions have application in a wide range of NLP tasks ranging from sentiment analysis to topic models and key-phrase extraction. 
 
 You can use `snlp` to identify different types of MWEs in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first create an instance of `MWE` class:
 
