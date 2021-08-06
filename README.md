@@ -5,7 +5,7 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 
 
-Statistical NLP (SNLP) is a practical package with statisical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
+Statistical NLP (SNLP) is a practical package with statistical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
 # Features
 - [Text Analysis](#text-analysis)
@@ -32,7 +32,7 @@ See the description of different functionalities with worked examples below.
 ## **Text Analysis**
 
 *snlp* provides an easy to use function (`text_analysis.generate_report`) for analyzing text with an extensive analysis report. `text_analysis.generate_report` 
-receives as input a dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for upto 4
+receives as input a dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for up to 4
 numerical or categorical labels. See the example below for more details.
 
 ```python
@@ -45,7 +45,7 @@ generate_report(df=imdb_train,
 
 ```
 
-The above script creates an analysis report that includes distribution plots and word clouds for different POS tags, for text, and bar plots and histograms for labels. You can specify upto 
+The above script creates an analysis report that includes distribution plots and word clouds for different POS tags, for text, and bar plots and histograms for labels. You can specify up to 
 4 labels of type *categorical* or *numerical*. See the example below for including another label of *numerical* type. The report is automatically rendered in the browser via `plotly` default port assignment. But you also have the option of saving the report in an HTML format by setting the `save_report` argument to `True`. 
 
 ```python
@@ -77,7 +77,7 @@ You can get word clouds for different part of speech tags, as can be seen in the
 
 ## **Extraction of Multiword Expressions**
 
-Identifying fixed expressions has application in a wide range of NLP taska ranging from sentiment analysis to topic models and keyphrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
+Identifying fixed expressions has application in a wide range of NLP tasks ranging from sentiment analysis to topic models and key-phrase extraction. Fixed expressions are those multiword units whose components cannot be replaced with their near synonyms. E.g. *swimming pool* that cannot be replaced with *swim pool* or *swimmers pool*. 
 
 You can use `snlp` to identify different types of MWEs in your text leveraging statistical measures such as *PMI* and *NPMI*. To do so, first create an instance of `MWE` class:
 
@@ -88,7 +88,7 @@ my_mwe_types = ["NC", "JNC"]
 mwe = MWE(df=imdb_train, mwe_types=my_mwe_types, text_column='text')
 ```
 
-If the text in `text_column` is untokenized or poorly tokenized, `MWE` recognizes this issue at instantiation time and shows you a warning. If you already know that your text is not tokenized, you can run the same instantiation with flag `tokenize=True`. Next you need to run the method `build_count()`. Since creating counts is a time consuming procesure, it was implemented independently from `extract_mwes()` method that works on top of the output of `build_count()`. This way, you can get the counts which is a time consuming process once, and then run `extract_mwes()` several times with different parameters.
+If the text in `text_column` is un-tokenized or poorly tokenized, `MWE` recognizes this issue at instantiation time and shows you a warning. If you already know that your text is not tokenized, you can run the same instantiation with flag `tokenize=True`. Next you need to run the method `build_count()`. Since creating counts is a time consuming procedure, it was implemented independently from `extract_mwes()` method that works on top of the output of `build_count()`. This way, you can get the counts which is a time consuming process once, and then run `extract_mwes()` several times with different parameters.
 
 ```python
 mwe.build_counts()
@@ -116,7 +116,7 @@ facial expressions
 global warming
 ```
 
-An important use of extracting MWEs is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using the `replace_mwes` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream appilcations. A worked example can be seen below:
+An important use of extracting MWEs is to treat them as a single token. Research shows that when fixed expressions are treated as a single token rather than the sum of their components, they can improve the performance of downstream applications such as classification and NER. Using the `replace_mwes` function, you can replace the extracted expressions in the corpus with their hyphenated version (global warming --> global-warming) so that they are considered a single token by downstream applications. A worked example can be seen below:
 
 ```python
 from snlp.mwes import replace_mwes
@@ -127,10 +127,10 @@ new_df.to_csv('tmp/new_df.csv', sep='\t')
 
 ## **Identification of Statistically Redundant Words**
 
-Redundant words carry little value and can exacerbate the results of many NLP tasks. To solve this issue, traditionally, a pre-defined list of words, called stop words was defined and removed from the data. However, creating such a list is not optimal because in addition to being a rule-based and manual approach which does not generalize well, one has to assume that there is a uneversal list of stop words that represents highly low entropy words for all corpora, which is a very strong assumption and not necessarily a true assumption in many cases.
+Redundant words carry little value and can exacerbate the results of many NLP tasks. To solve this issue, traditionally, a pre-defined list of words, called stop words was defined and removed from the data. However, creating such a list is not optimal because in addition to being a rule-based and manual approach which does not generalize well, one has to assume that there is a universal list of stop words that represents highly low entropy words for all corpora, which is a very strong assumption and not necessarily a true assumption in many cases.
 
-To solve this issue, one can use a purely sttistical solution which is completely automatic and does not make any universal assumption. It focuses only on the corpus at hand. Words can be represented with various statistics. For instance, they can be represented by their term frequency (tf) or inverse document ferquency (idf). It can be then interpreted that terms with anomalous (very high or very low) statistics carry little value and can be discardrd.
-SNLP enables you to identify such terms in an automatic fashion. The solution might seem complex behind the scene, as it firsts needs calculate certain statistics, gaussanize the distribution of the specified statistics (i.e. tf or ifd), and then identify the terms with anomalous values on the gaussanized distribution by looking at their z-score. However, the API is easy and convinient to use. The example below shows how you can use this API:
+To solve this issue, one can use a purely statistical solution which is completely automatic and does not make any universal assumption. It focuses only on the corpus at hand. Words can be represented with various statistics. For instance, they can be represented by their term frequency (tf) or inverse document frequency (idf). It can be then interpreted that terms with anomalous (very high or very low) statistics carry little value and can be discarded.
+SNLP enables you to identify such terms in an automatic fashion. The solution might seem complex behind the scene, as it firsts needs calculate certain statistics, gaussanize the distribution of the specified statistics (i.e. tf or ifd), and then identify the terms with anomalous values on the gaussanized distribution by looking at their z-score. However, the API is easy and convenient to use. The example below shows how you can use this API:
 
 ```python
 from snlp.preprocessing import RedunWords
@@ -151,7 +151,7 @@ Alternatively, you can manually set cut-off threshold for the specified score, b
 red_words = rw.get_redundant_terms(manual=True, manual_thresholds: dict={'lower_threshold':1, 'upper_threshold': 8})
 ```
 
-In order to get a better undertanding of the distribution of the scores before setting the thresholds, you can run `show_plot()` method from `RedunWords` class to see this distribution:
+In order to get a better understanding of the distribution of the scores before setting the thresholds, you can run `show_plot()` method from `RedunWords` class to see this distribution:
 
 ```python
 rw.show_plot()
