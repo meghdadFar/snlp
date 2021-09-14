@@ -17,7 +17,7 @@ else:
 
 setup(
     name="snlp",
-    version='0.1.3.post1',
+    version='0.1.3.post2',
     author="meghdadFar",
     author_email="meghdad.farahmand@gmail.com",
     description="Statistical NLP",
