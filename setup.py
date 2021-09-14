@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 from setuptools import setup, find_packages
 
@@ -15,7 +17,7 @@ else:
 
 setup(
     name="snlp",
-    version='0.1.2',
+    version='0.1.3.post1',
     author="meghdadFar",
     author_email="meghdad.farahmand@gmail.com",
     description="Statistical NLP",
