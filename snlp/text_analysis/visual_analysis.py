@@ -170,7 +170,6 @@ def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scatter:
     """
     wc = WordCloud(color_func=get_single_color_func("deepskyblue"), max_words=100)
     wc.generate_from_frequencies(token_count_dic)
-
     word_list = []
     rel_freq_list = []
     freq_list = []
@@ -178,7 +177,6 @@ def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scatter:
     position_list = []
     orientation_list = []
     color_list = []
-
     for (word, rel_freq), fontsize, position, orientation, color in wc.layout_:
         word_list.append(word)
         rel_freq_list.append(rel_freq)
@@ -187,30 +185,33 @@ def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scatter:
         position_list.append(position)
         orientation_list.append(orientation)
         color_list.append(color)
-
     # get the positions
     x = []
     y = []
     for i in position_list:
         x.append(i[0])
         y.append(i[1])
-
-    # get the relative occurence frequencies
+    # get the relative occurrence frequencies
     new_freq_list = []
     for i in rel_freq_list:
-        new_freq_list.append(i * 100)
-    new_freq_list
+        i_tmp = round(i*100, 4)
+        i_tmp = i_tmp if i_tmp > 1 else 1 # Plotly textfont.size in go.Scatter throws exception for values below 1.
+        new_freq_list.append(i_tmp)
+    try:
+        trace = go.Scatter(
+            x=x,
+            y=y,
+            textfont=dict(size=new_freq_list, color=color_list),
+            hoverinfo="text",
+            hovertext=["{0}: {1}".format(w, f) for w, f in zip(word_list, freq_list)],
+            mode="text",
+            text=word_list,
+        )
+        return trace
+    except Exception as E:
+        logger.error(f'While creating the word cloud, plotly.go returned the following error \
+         \n{E}\nfor relative frequencies: {rel_freq_list}\nthat were mapped to {new_freq_list}')
 
-    trace = go.Scatter(
-        x=x,
-        y=y,
-        textfont=dict(size=new_freq_list, color=color_list),
-        hoverinfo="text",
-        hovertext=["{0}: {1}".format(w, f) for w, f in zip(word_list, freq_list)],
-        mode="text",
-        text=word_list,
-    )
-    return trace
 
 
 def generate_text_plots(
