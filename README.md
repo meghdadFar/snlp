@@ -189,7 +189,8 @@ replace={'!!!':'!', '\?\?\?':'?'}
 # Finally, let's set the maximum length of a token to 15:
 maxlen=15
 
-imdb_train.text = imdb_train.text.apply(clean_text, args=(keep_pattern, drop_patterns, replace, maxlen,))
+# Pass the set keyword arguments to the apply:
+imdb_train.text = imdb_train.text.apply(clean_text, args=(), keep_pattern=keep_pattern, replace=replace, maxlen=maxlen)
 ```
 
 Note that `clean_text` returns tokenized text. 
