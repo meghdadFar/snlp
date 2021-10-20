@@ -9,6 +9,7 @@ def clean_text(
     drop_patterns: Set[str]=set([]),
     replace: Dict = {},
     maxlen: int = 15,
+    lower=False
 ) -> str:
     """Tokenize and clean text, by matching it against keep_pattern and droping and replacing provided patterns.
 
@@ -17,7 +18,9 @@ def clean_text(
         keep_pattern (str): Allowed patterns e.g. [a-zA-Z]. Defaults to "[a-zA-Z0-9!.,?]". 
         drop_patterns (set): Set of patterns that should be dropeed from text.
         replace (dict): Dictionary of to_be_replaced_pattern: replaced_with. E.g. {[0-9]+: NUM}
-        maxlen (int): Maximum length of a token. Defaults to 15. 
+        maxlen (int): Maximum length of a token. Defaults to 15.
+        lower (bool): Whether or nor lowercase the text at the end.
+
 
     Returns:
         out_text (string): Tokenized and cleaned up text with respect to all above criteria.
@@ -44,4 +47,6 @@ def clean_text(
             if re.match(keep_pattern, t):
                 out_tokens.append(t)
     out_text = " ".join(out_tokens)
+    if lower:
+        out_text = out_text.lower()
     return out_text
