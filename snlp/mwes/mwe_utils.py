@@ -89,7 +89,7 @@ def get_ngrams(sentence: str, n: int) -> List:
         tokens = sentence.split(" ")
     except Exception as E:
         logger.error(E)
-        logger.error(f"Input sentence {sentence} cannot be spilitted around space. No n-gram is extracted.")
+        logger.error(f'Input "{sentence}" cannot be spilitted around space. No n-gram is extracted.')
         return ngrams
     for i in range(len(tokens) - n + 1):
         ngrams.append(" ".join(tokens[i : i + n]))

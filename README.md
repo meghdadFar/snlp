@@ -12,6 +12,7 @@ Statistical NLP (SNLP) is a practical package with statistical tools for natural
 - [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
 - [Identification of Statistically Redundant Words](#identification-of-statistically-redundant-words)
 - [Text Cleaning](#text-cleaning)
+- [Auto Text Cleaning](#auto-text-cleaning)
 
 ## Upcoming Features
 - **Identification of Non-compositional Expressions (e.g. *red tape* and *brain drain*)**. Non-compositional expressions have application in profanity detection, language understanding, and language generation.
@@ -200,3 +201,6 @@ Note that `clean_text` returns tokenized text.
 <a id="1">[1]</a> R. Csaky et al. - Improving Neural Conversational Models with Entropy-Based Data Filtering - In Proceedings of ACL 2019 - Florence, Italy.
 
 <a id="2">[2]</a> Maxime Peyrard - A Simple Theoretical Model of Importance for Summarization - In Proceedings of ACL 2019 - Florence, Italy.
+
+## **Auto Text Cleaning**
+One of the first obstacles that any NLP practitioner faces is the tedious, demotivating, and confusing task of cleaning up the text. Unlike images that come in a perfect-for-ml vector format which is the same across the globe and input sources, text comes in all forms, formats, styles, languages, and structures. Before being able to get value out of it, any NLP expert has gone through the painful and tedious task of text cleaning. Even worse, there is no universal recipe for this. That is to say, should I lowercase this text? Shall I replace numbers with a place holder or should remove them altogether? How about stop words?... Each person can carry out a subset of the mentioned example steps, and arrive at a different cleaned text. How can we compare models then? A slight change in the often overlooked cleaning step can lead to inconsistency in our experiments. 
