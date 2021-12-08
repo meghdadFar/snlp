@@ -29,12 +29,18 @@ Install the package:
 `pip install snlp`
 
 See the description of different functionalities with worked examples below. 
+At first, let's load some test data. Note the format of the input data. It is a `csv` file comprising `text` and `label` columns:
+
+```python
+import pandas as pd
+imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+```
+
 
 ## **Text Analysis**
 
 *snlp* provides an easy to use function (`text_analysis.generate_report`) for analyzing text with an extensive analysis report. `text_analysis.generate_report` 
-receives as input a dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for up to 4
-numerical or categorical labels. See the example below for more details.
+receives as input a Pandas Dataframe that contains a text column, and an optional number of label columns. Currently, `text_analysis.generate_report` can generate plots for up to 4 numerical or categorical labels. See the example below for more details. 
 
 ```python
 from snlp.text_analysis import generate_report
@@ -47,7 +53,7 @@ generate_report(df=imdb_train,
 ```
 
 The above script creates an analysis report that includes distribution plots and word clouds for different POS tags, for text, and bar plots and histograms for labels. You can specify up to 
-4 labels of type *categorical* or *numerical*. See the example below for including another label of *numerical* type. The report is automatically rendered in the browser via `plotly` default port assignment. But you also have the option of saving the report in an HTML format by setting the `save_report` argument to `True`. 
+4 labels of type *categorical* or *numerical*. See the example below for including another label of *numerical* type. The report is automatically rendered in the browser via `plotly` port assignment. But you also have the option of saving the report in the HTML format by setting the `save_report` argument to `True`. 
 
 ```python
 import numpy as np
@@ -136,7 +142,6 @@ SNLP enables you to identify such terms in an automatic fashion. The solution mi
 ```python
 from snlp.preprocessing import RedunWords
 
-imdb_train = pd.read_csv('resources/data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 rw = RedunWords(imdb_train["text"], method='idf')
 ```
 
