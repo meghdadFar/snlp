@@ -34,6 +34,16 @@ At first, let's load some test data. Note the format of the input data. It is a 
 ```python
 import pandas as pd
 imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+
+imdb_train.head()
+
+  label                                               text
+0   neg  well , i rented this movie and found out it re...
+1   pos  you know , this movie is n't that great , but ...
+2   pos  a heartwarming film . the usual superb acting ...
+3   pos  i did n't expect to like this film as much as ...
+4   pos  i could n't help but feel that this could have...
+>>> 
 ```
 
 
