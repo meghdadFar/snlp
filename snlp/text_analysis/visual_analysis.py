@@ -455,18 +455,18 @@ def generate_report(
             logger.warning("Processing entry --- %s --- lead to exception: %s" % (text, e.args[0]))
             continue
 
-        postag_tokens = nltk.pos_tag(tokens)
-        nouns = get_pos(postag_tokens, "NN")
-        update_count(NNs, nouns)
-        verbs = get_pos(postag_tokens, "VB")
-        update_count(Vs, verbs)
-        adjectives = get_pos(postag_tokens, "JJ")
-        update_count(JJs, adjectives)
-
+        # postag_tokens = nltk.pos_tag(tokens)
+        # nouns = get_pos(postag_tokens, "NN")
+        # update_count(NNs, nouns)
+        # verbs = get_pos(postag_tokens, "VB")
+        # update_count(Vs, verbs)
+        # adjectives = get_pos(postag_tokens, "JJ")
+        # update_count(JJs, adjectives)
     word_frequencies = [v for _, v in token_to_count.items()]
-
+    return doc_lengths, word_frequencies
+    
+    # Old version where all analysis was shown on an offline plot
     fig_main = create_adjust_subplots(label_cols)
-
     logger.info("Generating distplots and word cloud for input text")
     generate_text_plots(fig_main, doc_lengths, word_frequencies, NNs, JJs, Vs)
     logger.info("Generating plots for labels")

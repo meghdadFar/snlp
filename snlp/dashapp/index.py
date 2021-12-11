@@ -1,9 +1,26 @@
+import types
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output
-from snlp.
+import pandas as pd
+import plotly.express as px
+from snlp.text_analysis.visual_analysis import generate_report
+import plotly.figure_factory as ff
+
+
+# Process data
 input_text_name = "IMDB Corpus"
+imdb_train = pd.read_csv('../../data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
+# imdb_train = imdb_train.sample(10)
+doc_lengths, word_frequencies = generate_report(df=imdb_train,
+                                    out_dir='output_dir',
+                                    text_col='text',
+                                    label_cols=[('label', 'categorical')])
+
+word_freq_dist = ff.create_distplot([word_frequencies], group_labels=["distplot"], colors=["magenta"], curve_type='normal')
+doc_len_dist = ff.create_distplot([doc_lengths], group_labels=["distplot"], colors=["blue"])
+word_freq_dist_px = px.histogram(x=word_frequencies, marginal="rug", nbins=50)
 
 app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 
@@ -93,9 +110,10 @@ def render_content(tab):
                                  style = {'display': True},
                                  value = 'Switzerland',
                                  placeholder = 'Select Countries',
-                                 options=[{'label': 'New York City', 'value': 'NYC'},
-                                        {'label': 'Montreal', 'value': 'MTL'},
-                                        {'label': 'San Francisco', 'value': 'SF'}], 
+                                 options=[{'label': 'Word Frequency', 'value': 'wf'},
+                                        {'label': 'Documen Length', 'value': 'dl'},
+                                        {'label': 'Px', 'value': 'px'}
+                                        ], 
                                         className = 'dcc_compon')
             ]),
             html.Div(id='dd-content')
@@ -108,20 +126,22 @@ def render_content(tab):
 @app.callback(Output('dd-content', 'children'),
               [Input('select_option', 'value')]
               )
-def show_country(country):
-    return html.Div([
-                html.H3(f'The Country: {country}'),
-                dcc.Graph(
-                        figure={
-                            'data': [
-                                {'x': [1, 2, 3], 'y': [2, 4, 3],
-                                'type': 'bar', 'name': 'SF'},
-                                {'x': [1, 2, 3], 'y': [5, 4, 3],
-                                'type': 'bar', 'name': u'Montréal'}
-                                ]
-                            }
-                        )
-            ])
+def show_country(dist):
+    if dist == "wf":
+        return html.Div([
+                    html.H3(f'Showing the Distribution of: {dist}'),
+                    dcc.Graph(figure=word_freq_dist)
+                ])
+    elif dist == "dl":
+        return html.Div([
+                    html.H3(f'Showing the Distribution of: {dist}'),
+                    dcc.Graph(figure=doc_len_dist)
+                ])
+    elif dist == "px":
+        return html.Div([
+                    html.H3(f'Showing the Distribution of: {dist}'),
+                    dcc.Graph(figure=word_freq_dist_px)
+                ])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
