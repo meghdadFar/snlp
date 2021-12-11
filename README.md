@@ -81,15 +81,15 @@ generate_report(df=imdb_train,
 
 The above yields a report in HTML, with interactive `plotly` plots as can be seen in example screenshots below. 
 
-![annotation1](/assets/annotation1.png)
+![annotation1](/figs/annotation1.png)
 
  You can easily zoom in any part of the plot to a have a closer look:
 
-![zoom](/assets/zoom.png)
+![zoom](/figs/zoom.png)
 
 You can get word clouds for different part of speech tags, as can be seen in the below example where word clouds for nouns, adjectives and verbs are rendered:
 
-![wc](/assets/wc.png)
+![wc](/figs/wc.png)
 
 ## **Extraction of Multiword Expressions**
 

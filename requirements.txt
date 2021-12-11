@@ -5,3 +5,4 @@ nltk>=3.6.2
 tqdm==4.45.0
 wordcloud==1.7.0
 plotly==5.1.0
+dash==2.0.0
