@@ -54,6 +54,15 @@ align-items: center;
   justify-content: center;
 }
 
+.card_container {
+  border-radius: 5px;
+  background-color: #07380d;
+  margin: 16px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px #07380d;
+}
+
 .custom-tab--selected {
   /* border-left: 1px solid #dc09e3 !important; */
   /* border-right: 1px solid #dc09e3 !important; */

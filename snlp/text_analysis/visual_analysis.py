@@ -6,6 +6,8 @@ import plotly
 import pandas
 import plotly.figure_factory as ff
 import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
 
 from wordcloud import WordCloud, get_single_color_func
 from snlp import logger
@@ -462,9 +464,28 @@ def generate_report(
         # update_count(Vs, verbs)
         # adjectives = get_pos(postag_tokens, "JJ")
         # update_count(JJs, adjectives)
-    word_frequencies = [v for _, v in token_to_count.items()]
-    return doc_lengths, word_frequencies
+    freq_df = pd.DataFrame({'tokens': token_to_count.keys(), 'count':token_to_count.values()})
+    freq_df['proportion'] = freq_df['count']/freq_df['count'].sum()
+    vocab_size = freq_df.shape[0]
+    n_tokens = freq_df['count'].sum()
+    N = n_tokens
+    s = 1
     
+    # def classic_zipf(k, N=n_tokens, s=1):
+    #     return (1/k**s)/(np.sum(1/(np.arange(1, N+1)**s)))
+
+    logger.info("Calculating Emperical and Theoritical...")
+    freq_df["position"] = freq_df.index+1
+    # freq_df['predicted_proportion'] = freq_df["position"].apply(classic_zipf)
+    freq_df['predicted_proportion'] = freq_df["position"].apply(lambda x: (1/x**s)/(np.sum(1/(np.arange(1, N+1)**s))))
+    x = np.log(freq_df["position"].values)
+    y_emperical = np.log(freq_df['count'])
+    y_theoritical = np.log(freq_df['predicted_proportion'] * n_tokens)
+    
+    logger.info("Calculated Emperical and Theoritical...")
+    # word_frequencies = [v for _, v in token_to_count.items()]
+    return doc_lengths, x, y_emperical, y_theoritical
+
     # Old version where all analysis was shown on an offline plot
     fig_main = create_adjust_subplots(label_cols)
     logger.info("Generating distplots and word cloud for input text")
