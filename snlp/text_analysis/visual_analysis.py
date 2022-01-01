@@ -1,6 +1,8 @@
 import string
 from typing import List, Tuple
 import nltk
+import time
+from statistics import median
 import os
 import plotly
 import pandas
@@ -8,6 +10,7 @@ import plotly.figure_factory as ff
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
+import fasttext
 
 from wordcloud import WordCloud, get_single_color_func
 from snlp import logger
@@ -15,6 +18,8 @@ from tqdm import tqdm
 from nltk.corpus import stopwords
 from plotly.subplots import make_subplots
 
+here = os.path.dirname(os.path.abspath(__file__))
+ftmodel = fasttext.load_model(os.path.join(here, 'lid.176.ftz'))
 
 def create_adjust_subplots(labels: List[Tuple]) -> plotly.graph_objects.Figure:
     """Create subplots and adjust the location of the titles wrt the number of labels.
@@ -399,6 +404,8 @@ def generate_report(
         None
     """
 
+    global ftmodel
+
     def update_count(items_dic: dict, items: List[str]) -> None:
         """Update the corresponding count for each key in  items_dic. w.r.t. terms in items.
 
@@ -443,9 +450,12 @@ def generate_report(
     NNs = {}
     JJs = {}
     Vs = {}
+    languages = set()
 
     logger.info("Processing text in %s column of the input DataFrame..." % text_col)
     for text in tqdm(df[text_col]):
+        ls = ftmodel.predict(text)[0][0].replace('__label__', '').upper()
+        languages.update([ls])
         try:
             tokens = text.lower().split(" ")
             doc_lengths.append(len(tokens))
@@ -464,37 +474,50 @@ def generate_report(
         # update_count(Vs, verbs)
         # adjectives = get_pos(postag_tokens, "JJ")
         # update_count(JJs, adjectives)
+    
     freq_df = pd.DataFrame({'tokens': token_to_count.keys(), 'count':token_to_count.values()})
     freq_df['proportion'] = freq_df['count']/freq_df['count'].sum()
     vocab_size = freq_df.shape[0]
     n_tokens = freq_df['count'].sum()
-    N = n_tokens
     s = 1
-    
-    # def classic_zipf(k, N=n_tokens, s=1):
-    #     return (1/k**s)/(np.sum(1/(np.arange(1, N+1)**s)))
+    denom = np.sum(1/(np.arange(1, n_tokens+1)**s))
 
-    logger.info("Calculating Emperical and Theoritical...")
+    def classic_zipf(k, s=s, denom=denom):
+        num = 1/k**s
+        res = num/denom
+        return res 
+
+    logger.info("Calculating Empirical and Theoretical Zipf values...")
     freq_df["position"] = freq_df.index+1
-    # freq_df['predicted_proportion'] = freq_df["position"].apply(classic_zipf)
-    freq_df['predicted_proportion'] = freq_df["position"].apply(lambda x: (1/x**s)/(np.sum(1/(np.arange(1, N+1)**s))))
+    start = time.time()
+    freq_df['predicted_proportion'] = freq_df["position"].apply(classic_zipf)
+    end = time.time()
+    logger.info(f'Time to measure predicted proportion for {freq_df.shape[0]} rows: {end - start}')
+
     x = np.log(freq_df["position"].values)
     y_emperical = np.log(freq_df['count'])
     y_theoritical = np.log(freq_df['predicted_proportion'] * n_tokens)
     
-    logger.info("Calculated Emperical and Theoritical...")
-    # word_frequencies = [v for _, v in token_to_count.items()]
-    return doc_lengths, x, y_emperical, y_theoritical
+    res = TextAnalysisResult(doc_lengths=doc_lengths,
+                            zipf_x=x,
+                            zipf_y_emp=y_emperical,
+                            zipf_y_theory=y_theoritical,
+                            languages=languages,
+                            type_count=vocab_size,
+                            token_count=n_tokens,
+                            doc_count=len(doc_lengths),
+                            median_doc_len=median(doc_lengths))
 
-    # Old version where all analysis was shown on an offline plot
-    fig_main = create_adjust_subplots(label_cols)
-    logger.info("Generating distplots and word cloud for input text")
-    generate_text_plots(fig_main, doc_lengths, word_frequencies, NNs, JJs, Vs)
-    logger.info("Generating plots for labels")
-    generate_label_plots(fig_main, df, label_cols)
-    logger.info("Rendering plots")
-    fig_main.update_layout(height=3100, showlegend=False)
-    if save_report:
-        plotly.offline.plot(fig_main, filename=os.path.join(out_dir, "report.html"))
-    else:
-        fig_main.show()
+    return res
+
+class TextAnalysisResult():
+   def __init__(self, doc_lengths, zipf_x, zipf_y_emp, zipf_y_theory, languages, type_count, token_count, doc_count, median_doc_len):
+        self.doc_lengths = doc_lengths
+        self.zipf_x = zipf_x
+        self.zipf_y_emp = zipf_y_emp
+        self.zipf_y_theory = zipf_y_theory
+        self.languages = languages
+        self.type_count = type_count
+        self.token_count = token_count
+        self.doc_count = doc_count 
+        self.median_doc_len = median_doc_len
