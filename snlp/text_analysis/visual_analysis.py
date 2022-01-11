@@ -166,7 +166,7 @@ def create_adjust_subplots(labels: List[Tuple]) -> plotly.graph_objects.Figure:
     return fig
 
 
-def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scatter:
+def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scattergl:
     """Create a world cloud trace for plotly.
 
     Args:
@@ -205,7 +205,7 @@ def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scatter:
         i_tmp = i_tmp if i_tmp > 1 else 1 # Plotly textfont.size in go.Scatter throws exception for values below 1.
         new_freq_list.append(i_tmp)
     try:
-        trace = go.Scatter(
+        trace = go.Scattergl(
             x=x,
             y=y,
             textfont=dict(size=new_freq_list, color=color_list),
@@ -440,7 +440,7 @@ def generate_report(
         return res
 
     if len(label_cols) > 4:
-        raise ValueError("Maximum of 4 labels can be specidied for analysis.")
+        raise ValueError("Maximum of 4 labels can be specified for analysis.")
 
     stop_words = set(stopwords.words(language))
     punctuations = set(string.punctuation)
@@ -467,13 +467,13 @@ def generate_report(
             logger.warning("Processing entry --- %s --- lead to exception: %s" % (text, e.args[0]))
             continue
 
-        # postag_tokens = nltk.pos_tag(tokens)
-        # nouns = get_pos(postag_tokens, "NN")
-        # update_count(NNs, nouns)
-        # verbs = get_pos(postag_tokens, "VB")
-        # update_count(Vs, verbs)
-        # adjectives = get_pos(postag_tokens, "JJ")
-        # update_count(JJs, adjectives)
+        postag_tokens = nltk.pos_tag(tokens)
+        nouns = get_pos(postag_tokens, "NN")
+        update_count(NNs, nouns)
+        verbs = get_pos(postag_tokens, "VB")
+        update_count(Vs, verbs)
+        adjectives = get_pos(postag_tokens, "JJ")
+        update_count(JJs, adjectives)
     
     freq_df = pd.DataFrame({'tokens': token_to_count.keys(), 'count':token_to_count.values()})
     freq_df['proportion'] = freq_df['count']/freq_df['count'].sum()
@@ -498,7 +498,7 @@ def generate_report(
     y_emperical = np.log(freq_df['count'])
     y_theoritical = np.log(freq_df['predicted_proportion'] * n_tokens)
     
-    res = TextAnalysisResult(doc_lengths=doc_lengths,
+    return TextAnalysisResult(doc_lengths=doc_lengths,
                             zipf_x=x,
                             zipf_y_emp=y_emperical,
                             zipf_y_theory=y_theoritical,
@@ -506,12 +506,14 @@ def generate_report(
                             type_count=vocab_size,
                             token_count=n_tokens,
                             doc_count=len(doc_lengths),
-                            median_doc_len=median(doc_lengths))
+                            median_doc_len=median(doc_lengths),
+                            nns=NNs,
+                            jjs=JJs,
+                            vs=Vs)
 
-    return res
 
 class TextAnalysisResult():
-   def __init__(self, doc_lengths, zipf_x, zipf_y_emp, zipf_y_theory, languages, type_count, token_count, doc_count, median_doc_len):
+   def __init__(self, doc_lengths, zipf_x, zipf_y_emp, zipf_y_theory, languages, type_count, token_count, doc_count, median_doc_len, nns, jjs, vs):
         self.doc_lengths = doc_lengths
         self.zipf_x = zipf_x
         self.zipf_y_emp = zipf_y_emp
@@ -521,3 +523,6 @@ class TextAnalysisResult():
         self.token_count = token_count
         self.doc_count = doc_count 
         self.median_doc_len = median_doc_len
+        self.nns = nns
+        self.jjs = jjs
+        self.vs = vs

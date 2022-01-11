@@ -56,11 +56,35 @@ align-items: center;
 
 .card_container {
   border-radius: 5px;
-  background-color: #07380d;
+  background-color: #119DFF;
   margin: 16px;
   padding: 15px;
   position: relative;
-  box-shadow: 2px 2px 2px #07380d;
+  box-shadow: 2px 2px 2px #119DFF;
+}
+
+.fix_label {
+  font-size: 20px;
+    margin: 0;
+    padding: 10px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    width: calc(100%-40px);
+  }
+
+.dcc_compon {
+  margin: 0;
+  padding: 5px;
+  width: calc(100%-40px);
+}
+
+.dropdown {
+  /* border-radius: 5px; */
+  background-color: #1F75FE;
+  margin: 15px;
+  padding: 15px;
+  /* position: relative; */
+  /* box-shadow: 2px 2px 2px #07380d; */
 }
 
 .custom-tab--selected {
