@@ -1,14 +1,19 @@
-import types
+from pydoc import text
 import dash
+import json
+import random
+import dash_table
+
 import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output
 import pandas as pd
-import plotly.express as px
-from snlp.text_analysis.visual_analysis import generate_report, plotly_wordcloud
 import plotly.figure_factory as ff
 import plotly.graph_objs as go
-from snlp import logger
+
+from operator import add
+from dash.dependencies import Input, Output
+from snlp.text_analysis.visual_analysis import do_analysis, plotly_wordcloud, generate_label_plots
+from snlp.mwes import MWE
 
 
 # Process data
@@ -16,7 +21,8 @@ input_text_name = "IMDB Corpus"
 imdb_train = pd.read_csv('data/imdb_train_sample.tsv', sep='\t', names=['label', 'text'])
 imdb_train = imdb_train.sample(1000)
 
-analysis_res = generate_report(df=imdb_train,
+# Text
+analysis_res = do_analysis(df=imdb_train,
                                out_dir='output_dir',
                                text_col='text',
                                label_cols=[('label', 'categorical')])
@@ -48,11 +54,55 @@ word_cloud_setup = {'plot_bgcolor': 'rgba(0, 0, 0, 0)',
                     'xaxis_showticklabels':False,
                     }
 
-
-
 fig_noun_cloud.update_layout(word_cloud_setup)
 fig_adj_cloud.update_layout(word_cloud_setup)
 fig_verb_cloud.update_layout(word_cloud_setup)
+
+# MWEs
+mwe = MWE(df=imdb_train, mwe_types=["NC", "JNC"], text_column='text')
+mwe.build_counts()
+mwe.extract_mwes()
+with open(mwe.mwe_file, "r") as file:
+    mwes_dict = json.load(file)
+
+def mwe_dict_to_tabledata(mwe_dict, mwe_type, max_n=100):
+    # ncs = []
+    # ams = []
+    tabledata = []
+    for k,v in mwe_dict[mwe_type].items():
+        if len(tabledata) <= max_n:
+            if v > 0:
+                # ncs.append(k)
+                # ams.append(v)
+                tabledata.append({'MWE': k, 'AM':v})
+            else:
+                break
+        else:
+            break
+    return tabledata
+
+tabledata_ncs = mwe_dict_to_tabledata(mwe_dict=mwes_dict, mwe_type='NC')
+tabledata_jnc = mwe_dict_to_tabledata(mwe_dict=mwes_dict, mwe_type='JNC')
+
+
+# Bubble 
+# ams = [am * 20 for am in ams]
+# y = list(map(add, ams, [random.randrange(-int(max(ams)), int(max(ams))) for i in range(len(ams))]))
+# fig_mwe = go.Figure(data=[
+#             go.Scatter(
+#                 x=ams,
+#                 y=y,
+#                 text=ncs,
+#                 mode='markers+text',
+#                 hoverinfo='text',
+#                 # marker_size=ams,
+#                 marker=dict(color='cyan', size=ams)
+#         )
+#     ]
+# )
+
+# Labels
+labels_figure = generate_label_plots(df=imdb_train, label_cols=[('label', 'categorical'), ('label', 'categorical'), ('label', 'categorical'), ('label', 'categorical')])
 
 app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 
@@ -60,8 +110,8 @@ app.layout = html.Div([
     # First row: Header
     html.Div([
         html.Div([
-            html.Img(src=app.get_asset_url('br02-no-bg-white.png'), id='logo', 
-            style={'height':'300px', 'width':'auto', 'margin-bottom':'25px'})
+            html.Img(src=app.get_asset_url('random-logo.png'), id='logo', 
+            style={'height':'150px', 'width':'auto', 'margin-bottom':'25px'})
         ], className='one-third column'),
         html.Div([
             html.Div([
@@ -109,16 +159,16 @@ app.layout = html.Div([
                     selected_style= {'backgroundColor': '#119DFF'},
                 ),
                 dcc.Tab(
-                    label='Keyphrases',
-                    value='tab-4', 
+                    label='Labels',
+                    value='tab-4',
                     className='custom-tab',
                     selected_className='custom-tab--selected',
                     style= {'backgroundColor': '#050c22'},
                     selected_style= {'backgroundColor': '#119DFF'},
                 ),
                 dcc.Tab(
-                    label='Labels',
-                    value='tab-5',
+                    label='Toolkit',
+                    value='tab-5', 
                     className='custom-tab',
                     selected_className='custom-tab--selected',
                     style= {'backgroundColor': '#050c22'},
@@ -250,19 +300,47 @@ def render_content(tab):
                     
             ], className='row flex display'),
             html.Div([
-                    html.H6(f'Nouns'),
+                    html.H2(children='Nouns', style={'textAlign': 'center', 'color': 'white'}),
                     dcc.Graph(figure=fig_noun_cloud)
                 ]),
             html.Div([
-                    html.H6(f'Verbs'),
+                    html.H2(children='Verbs', style={'textAlign': 'center', 'color': 'white'}),
                     dcc.Graph(figure=fig_verb_cloud)
                 ]),
             html.Div([
-                    html.H6(f'Adjectives'),
+                    html.H2(children='Adjectives', style={'textAlign': 'center', 'color': 'white'}),
                     dcc.Graph(figure=fig_adj_cloud)
                 ])
         ])
-    elif tab == 'tab-5':
+    elif tab == 'tab-3':
+        return html.Div([
+            html.Div([
+                    html.H4(f'MWEs (NC)'),
+                        dash_table.DataTable(
+                            id='table',
+                            columns=[{"name": i, "id": i} for i in ['MWE', 'AM']],
+                            data=tabledata_ncs,
+                            # style_cell=dict(textAlign='left'),
+                            style_header={'backgroundColor':'paleturquoise', 'textAlign':'center', 'font_family': 'san-serif', 'fontSize':20},
+                            style_data={'backgroundColor':'aliceblue', 'textAlign':'left', 'font_family': 'san-serif', 'fontSize':18},
+                            style_table={'height': 500,'overflowY': 'scroll'}
+                        )
+                ],style={'width': '50%', 'float': 'left'}),
+            html.Div([
+                    html.H4(f'MWEs (JNC)'),
+                        dash_table.DataTable(
+                            id='table',
+                            columns=[{"name": i, "id": i} for i in ['MWE', 'AM']],
+                            data=tabledata_jnc,
+                            # style_cell=dict(textAlign='left'),
+                            style_header={'backgroundColor':'paleturquoise', 'textAlign':'center', 'font_family': 'san-serif', 'fontSize':20},
+                            style_data={'backgroundColor':'aliceblue', 'textAlign':'left', 'font_family': 'san-serif', 'fontSize':18},
+                            style_table={'height': 500,'overflowY': 'scroll'}
+                        )
+                ],style={'width': '50%', 'float': 'left'}),
+            
+            ])
+    elif tab == 'tab-4':
         return html.Div([
             html.H4(children='',
                     style={'textAlign': 'left',
@@ -270,9 +348,32 @@ def render_content(tab):
             html.H4(children='Label Analysis from snlp',
                     style={'textAlign': 'left',
                     'color': 'white'}),
+            html.H4(children='Include Buttons from Tutorial 3',
+                    style={'textAlign': 'left',
+                    'color': 'white'}),
             html.H4(children='Label Evaluation from Hawk',
                     style={'textAlign': 'left',
-                    'color': 'white'})])
+                    'color': 'white'}),
+            html.Div([
+                    html.H4(f'Label Analysis'),
+                    dcc.Graph(figure=labels_figure)
+                ]),
+            ])
+    elif tab == 'tab-4':
+        return html.Div([
+            html.H4(children='',
+                    style={'textAlign': 'left',
+                    'color': 'white'}),
+            html.H4(children='Create a filterset',
+                    style={'textAlign': 'left',
+                    'color': 'white'}),
+            html.H4(children='Replace MWEs in the corpus',
+                    style={'textAlign': 'left',
+                    'color': 'white'}),
+            html.H4(children='Topic Extraction?',
+                    style={'textAlign': 'left',
+                    'color': 'white'}),
+            ])
 
 @app.callback(Output('dd-content', 'children'),
               [Input('select_option', 'value')]

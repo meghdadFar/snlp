@@ -21,149 +21,231 @@ from plotly.subplots import make_subplots
 here = os.path.dirname(os.path.abspath(__file__))
 ftmodel = fasttext.load_model(os.path.join(here, 'lid.176.ftz'))
 
-def create_adjust_subplots(labels: List[Tuple]) -> plotly.graph_objects.Figure:
-    """Create subplots and adjust the location of the titles wrt the number of labels.
+# def create_adjust_subplots(labels: List[Tuple]) -> plotly.graph_objects.Figure:
+#     """Create subplots and adjust the location of the titles wrt the number of labels.
 
-    Args:
-        labels (list): List of (label, type) tuples.
+#     Args:
+#         labels (list): List of (label, type) tuples.
 
-    Returns:
-        fig (plotly.graph_objs.Figure)
-    """
-    if len(labels) == 0:
-        titles = (
-            "Analysis of Text",
-            "Analysis of Labels",
-            "Document Lengths",
-            "",
-            "",
-            "",
-            "",
-            "Word Frequency",
-            "",
-            "",
-            "",
-            "",
-            "" "Common Nouns",
-            "",
-            "",
-            "",
-            "Common Adjectives",
-            "",
-            "",
-            "",
-            "Common Verbs",
-        )
-    elif len(labels) == 1:
-        titles = (
-            "Analysis of Text",
-            "Analysis of Labels",
-            "Document Lengths",
-            labels[0][0].capitalize(),
-            "",
-            "",
-            "Word Frequency",
-            "",
-            "",
-            "",
-            "",
-            "Common Nouns",
-            "",
-            "",
-            "",
-            "Common Adjectives",
-            "",
-            "",
-            "",
-            "Common Verbs",
-        )
-    elif len(labels) == 2:
-        titles = (
-            "Analysis of Text",
-            "Analysis of Labels",
-            "Document Lengths",
-            labels[0][0].capitalize(),
-            "",
-            labels[1][0].capitalize(),
-            "Word Frequency",
-            "",
-            "",
-            "Common Nouns",
-            "",
-            "",
-            "",
-            "Common Adjectives",
-            "",
-            "",
-            "",
-            "Common Verbs",
-        )
-    elif len(labels) == 3:
-        titles = (
-            "Analysis of Text",
-            "Analysis of Labels",
-            "Document Lengths",
-            labels[0][0].capitalize(),
-            "",
-            labels[1][0].capitalize(),
-            "Word Frequency",
-            labels[2][0].capitalize(),
-            "",
-            "Common Nouns",
-            "",
-            "",
-            "",
-            "Common Adjectives",
-            "",
-            "",
-            "",
-            "Common Verbs",
-        )
-    elif len(labels) == 4:
-        titles = (
-            "Analysis of Text",
-            "Analysis of Labels",
-            "Document Lengths",
-            labels[0][0].capitalize(),
-            "",
-            labels[1][0].capitalize(),
-            "Word Frequency",
-            labels[2][0].capitalize(),
-            "",
-            "Common Nouns",
-            labels[3][0].capitalize(),
-            "",
-            "Common Adjectives",
-            "",
-            "",
-            "",
-            "Common Verbs",
-        )
-    fig = make_subplots(
-        rows=16,
-        cols=2,
-        subplot_titles=titles,
-        specs=[
-            [{}, {}],
-            [{"rowspan": 2}, {"rowspan": 2} if len(labels) >= 1 else {}],  # row 2
-            [None, None if len(labels) >= 1 else {}],
-            [{}, {"rowspan": 2} if len(labels) >= 2 else {}],  # row 4
-            [{"rowspan": 2}, None if len(labels) >= 2 else {}],
-            [None, {"rowspan": 2} if len(labels) >= 3 else {}],  # row 6
-            [{}, None if len(labels) >= 3 else {}],
-            [{"rowspan": 3}, {"rowspan": 2} if len(labels) >= 4 else {}],  # row 8
-            [None, None if len(labels) >= 4 else {}],
-            [None, {}],
-            [{"rowspan": 3}, {}],  # 12
-            [None, {}],
-            [None, {}],
-            [{"rowspan": 3}, {}],  # 16
-            [None, {}],
-            [None, {}],
-        ],
-        vertical_spacing=0.035,
-    )
-    return fig
+#     Returns:
+#         fig (plotly.graph_objs.Figure)
+#     """
+#     if len(labels) == 0:
+#         titles = (
+#             "Analysis of Text",
+#             "Analysis of Labels",
+#             "Document Lengths",
+#             "",
+#             "",
+#             "",
+#             "",
+#             "Word Frequency",
+#             "",
+#             "",
+#             "",
+#             "",
+#             "" "Common Nouns",
+#             "",
+#             "",
+#             "",
+#             "Common Adjectives",
+#             "",
+#             "",
+#             "",
+#             "Common Verbs",
+#         )
+#     elif len(labels) == 1:
+#         titles = (
+#             "Analysis of Text",
+#             "Analysis of Labels",
+#             "Document Lengths",
+#             labels[0][0].capitalize(),
+#             "",
+#             "",
+#             "Word Frequency",
+#             "",
+#             "",
+#             "",
+#             "",
+#             "Common Nouns",
+#             "",
+#             "",
+#             "",
+#             "Common Adjectives",
+#             "",
+#             "",
+#             "",
+#             "Common Verbs",
+#         )
+#     elif len(labels) == 2:
+#         titles = (
+#             "Analysis of Text",
+#             "Analysis of Labels",
+#             "Document Lengths",
+#             labels[0][0].capitalize(),
+#             "",
+#             labels[1][0].capitalize(),
+#             "Word Frequency",
+#             "",
+#             "",
+#             "Common Nouns",
+#             "",
+#             "",
+#             "",
+#             "Common Adjectives",
+#             "",
+#             "",
+#             "",
+#             "Common Verbs",
+#         )
+#     elif len(labels) == 3:
+#         titles = (
+#             "Analysis of Text",
+#             "Analysis of Labels",
+#             "Document Lengths",
+#             labels[0][0].capitalize(),
+#             "",
+#             labels[1][0].capitalize(),
+#             "Word Frequency",
+#             labels[2][0].capitalize(),
+#             "",
+#             "Common Nouns",
+#             "",
+#             "",
+#             "",
+#             "Common Adjectives",
+#             "",
+#             "",
+#             "",
+#             "Common Verbs",
+#         )
+#     elif len(labels) == 4:
+#         titles = (
+#             "Analysis of Text",
+#             "Analysis of Labels",
+#             "Document Lengths",
+#             labels[0][0].capitalize(),
+#             "",
+#             labels[1][0].capitalize(),
+#             "Word Frequency",
+#             labels[2][0].capitalize(),
+#             "",
+#             "Common Nouns",
+#             labels[3][0].capitalize(),
+#             "",
+#             "Common Adjectives",
+#             "",
+#             "",
+#             "",
+#             "Common Verbs",
+#         )
+#     fig = make_subplots(
+#         rows=16,
+#         cols=2,
+#         subplot_titles=titles,
+#         specs=[
+#             [{}, {}],
+#             [{"rowspan": 2}, {"rowspan": 2} if len(labels) >= 1 else {}],  # row 2
+#             [None, None if len(labels) >= 1 else {}],
+#             [{}, {"rowspan": 2} if len(labels) >= 2 else {}],  # row 4
+#             [{"rowspan": 2}, None if len(labels) >= 2 else {}],
+#             [None, {"rowspan": 2} if len(labels) >= 3 else {}],  # row 6
+#             [{}, None if len(labels) >= 3 else {}],
+#             [{"rowspan": 3}, {"rowspan": 2} if len(labels) >= 4 else {}],  # row 8
+#             [None, None if len(labels) >= 4 else {}],
+#             [None, {}],
+#             [{"rowspan": 3}, {}],  # 12
+#             [None, {}],
+#             [None, {}],
+#             [{"rowspan": 3}, {}],  # 16
+#             [None, {}],
+#             [None, {}],
+#         ],
+#         vertical_spacing=0.035,
+#     )
+#     return fig
+
+
+# def generate_text_plots(
+#     figure: plotly.graph_objs.Figure,
+#     doc_length_list: List,
+#     word_freq_list: List,
+#     noun_freq_dict: dict,
+#     adj_freq_dic: dict,
+#     verb_freq_dic: dict,
+# ) -> None:
+#     """Generate distribution plots and word clouds for the textual content based on the input argumnets.
+
+#     Args:
+#         figure (plotly.graph_objs.Figure): Figure object in which the plots are created.
+#         doc_length_list (list): List containing the length of each document.
+#         word_freq_list (list): List containing the frequency of each word.
+#         noun_freq_dict (dictionary): Dictionary of noun to frequency.
+#         adj_freq_dict (dictionary): Dictionary of noun to frequency.
+#         verb_freq_dict (dictionary): Dictionary of verb to frequency.
+
+#     Returns:
+#         None
+#     """
+#     # Customize plots and x, y labels: https://plotly.com/python/subplots/#customizing-subplot-axes
+#     # Word cloud with plotly: https://github.com/PrashantSaikia/Wordcloud-in-Plotly/blob/master/plotly_wordcloud.py
+#     def _distplot_to_dist_trace(data: List, color: str) -> dict:
+#         """Create a trace from data.
+#         Args:
+#             data (list): List of numbers
+#             color (list[str])
+
+#         Returns:
+#             data_dist (dict): Representation of a distplot figure.
+#         """
+#         data_dist = ff.create_distplot([data], group_labels=["distplot"], colors=[color])["data"]
+#         for item in data_dist:
+#             item.pop("xaxis", None)
+#             item.pop("yaxis", None)
+#         return data_dist
+
+#     data1_dist = _distplot_to_dist_trace(doc_length_list, color="rgb(0, 200, 200)")
+#     data2_dist = _distplot_to_dist_trace(word_freq_list, color="magenta")
+
+#     d1_hist = data1_dist[0]
+#     d1_kde = data1_dist[1]
+#     d1_rug = data1_dist[2]
+
+#     d2_hist = data2_dist[0]
+#     d2_kde = data2_dist[1]
+#     d2_rug = data2_dist[2]
+
+#     noun_cloud = plotly_wordcloud(token_count_dic=noun_freq_dict)
+#     adj_cloud = plotly_wordcloud(token_count_dic=adj_freq_dic)
+#     verb_cloud = plotly_wordcloud(token_count_dic=verb_freq_dic)
+
+#     figure.append_trace(d1_hist, 2, 1)
+#     figure.append_trace(d1_kde, 2, 1)
+#     figure.append_trace(d1_rug, 4, 1)
+
+#     figure.append_trace(d2_hist, 5, 1)
+#     figure.append_trace(d2_kde, 5, 1)
+#     figure.append_trace(d2_rug, 7, 1)
+
+#     figure.append_trace(noun_cloud, 8, 1)
+#     figure.append_trace(adj_cloud, 11, 1)
+#     figure.append_trace(verb_cloud, 14, 1)
+
+#     figure.update_xaxes(rangemode="tozero", row=4, col=1)
+#     figure.update_yaxes(showticklabels=False, row=4, col=1)
+
+#     figure.update_xaxes(rangemode="tozero", row=7, col=1)
+#     figure.update_yaxes(showticklabels=False, row=7, col=1)
+
+#     figure.update_yaxes(title_text="Probability", row=2, col=1)
+#     figure.update_yaxes(title_text="Probability", row=5, col=1)
+
+#     figure.update_xaxes(showticklabels=False, zeroline=False, row=8, col=1)
+#     figure.update_xaxes(showticklabels=False, zeroline=False, row=11, col=1)
+#     figure.update_xaxes(showticklabels=False, zeroline=False, row=14, col=1)
+#     figure.update_yaxes(showticklabels=False, zeroline=False, row=8, col=1)
+#     figure.update_yaxes(showticklabels=False, zeroline=False, row=11, col=1)
+#     figure.update_yaxes(showticklabels=False, zeroline=False, row=14, col=1)
 
 
 def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scattergl:
@@ -220,90 +302,7 @@ def plotly_wordcloud(token_count_dic: dict) -> plotly.graph_objects.Scattergl:
          \n{E}\nfor relative frequencies: {rel_freq_list}\nthat were mapped to {new_freq_list}')
 
 
-
-def generate_text_plots(
-    figure: plotly.graph_objs.Figure,
-    doc_length_list: List,
-    word_freq_list: List,
-    noun_freq_dict: dict,
-    adj_freq_dic: dict,
-    verb_freq_dic: dict,
-) -> None:
-    """Generate distribution plots and word clouds for the textual content based on the input argumnets.
-
-    Args:
-        figure (plotly.graph_objs.Figure): Figure object in which the plots are created.
-        doc_length_list (list): List containing the length of each document.
-        word_freq_list (list): List containing the frequency of each word.
-        noun_freq_dict (dictionary): Dictionary of noun to frequency.
-        adj_freq_dict (dictionary): Dictionary of noun to frequency.
-        verb_freq_dict (dictionary): Dictionary of verb to frequency.
-
-    Returns:
-        None
-    """
-    # Customize plots and x, y labels: https://plotly.com/python/subplots/#customizing-subplot-axes
-    # Word cloud with plotly: https://github.com/PrashantSaikia/Wordcloud-in-Plotly/blob/master/plotly_wordcloud.py
-    def _distplot_to_dist_trace(data: List, color: str) -> dict:
-        """Create a trace from data.
-        Args:
-            data (list): List of numbers
-            color (list[str])
-
-        Returns:
-            data_dist (dict): Representation of a distplot figure.
-        """
-        data_dist = ff.create_distplot([data], group_labels=["distplot"], colors=[color])["data"]
-        for item in data_dist:
-            item.pop("xaxis", None)
-            item.pop("yaxis", None)
-        return data_dist
-
-    data1_dist = _distplot_to_dist_trace(doc_length_list, color="rgb(0, 200, 200)")
-    data2_dist = _distplot_to_dist_trace(word_freq_list, color="magenta")
-
-    d1_hist = data1_dist[0]
-    d1_kde = data1_dist[1]
-    d1_rug = data1_dist[2]
-
-    d2_hist = data2_dist[0]
-    d2_kde = data2_dist[1]
-    d2_rug = data2_dist[2]
-
-    noun_cloud = plotly_wordcloud(token_count_dic=noun_freq_dict)
-    adj_cloud = plotly_wordcloud(token_count_dic=adj_freq_dic)
-    verb_cloud = plotly_wordcloud(token_count_dic=verb_freq_dic)
-
-    figure.append_trace(d1_hist, 2, 1)
-    figure.append_trace(d1_kde, 2, 1)
-    figure.append_trace(d1_rug, 4, 1)
-
-    figure.append_trace(d2_hist, 5, 1)
-    figure.append_trace(d2_kde, 5, 1)
-    figure.append_trace(d2_rug, 7, 1)
-
-    figure.append_trace(noun_cloud, 8, 1)
-    figure.append_trace(adj_cloud, 11, 1)
-    figure.append_trace(verb_cloud, 14, 1)
-
-    figure.update_xaxes(rangemode="tozero", row=4, col=1)
-    figure.update_yaxes(showticklabels=False, row=4, col=1)
-
-    figure.update_xaxes(rangemode="tozero", row=7, col=1)
-    figure.update_yaxes(showticklabels=False, row=7, col=1)
-
-    figure.update_yaxes(title_text="Probability", row=2, col=1)
-    figure.update_yaxes(title_text="Probability", row=5, col=1)
-
-    figure.update_xaxes(showticklabels=False, zeroline=False, row=8, col=1)
-    figure.update_xaxes(showticklabels=False, zeroline=False, row=11, col=1)
-    figure.update_xaxes(showticklabels=False, zeroline=False, row=14, col=1)
-    figure.update_yaxes(showticklabels=False, zeroline=False, row=8, col=1)
-    figure.update_yaxes(showticklabels=False, zeroline=False, row=11, col=1)
-    figure.update_yaxes(showticklabels=False, zeroline=False, row=14, col=1)
-
-
-def generate_label_plots(figure: plotly.graph_objs.Figure, df: pandas.DataFrame, label_cols: str) -> None:
+def generate_label_plots(df: pandas.DataFrame, label_cols: List[Tuple]) -> None:
     """Generate histogram and bar plots for the labels in label_cols.
 
     Args:
@@ -315,40 +314,46 @@ def generate_label_plots(figure: plotly.graph_objs.Figure, df: pandas.DataFrame,
     Returns:
         None
     """
+    
     if len(label_cols) == 1:
+        figure = make_subplots(rows=1, cols=1,subplot_titles=("Plot 1"))
         lab_trace1 = label_plot(df, label_col=label_cols[0][0], label_type=label_cols[0][1])
-        figure.append_trace(lab_trace1, 2, 2)
+        figure.append_trace(lab_trace1, 1, 1)
         figure.update_yaxes(title_text="Count", row=2, col=2)
     elif len(label_cols) == 2:
+        figure = make_subplots(rows=1, cols=2,subplot_titles=("Plot 1", "Plot 2"))
         lab_trace1 = label_plot(df, label_col=label_cols[0][0], label_type=label_cols[0][1])
         lab_trace2 = label_plot(df, label_col=label_cols[1][0], label_type=label_cols[1][1])
-        figure.append_trace(lab_trace1, 2, 2)
-        figure.append_trace(lab_trace2, 4, 2)
-        figure.update_yaxes(title_text="Count", row=2, col=2)
-        figure.update_yaxes(title_text="Count", row=4, col=2)
+        figure.append_trace(lab_trace1, 1, 1)
+        figure.append_trace(lab_trace2, 1, 2)
+        # figure.update_yaxes(title_text="Count", row=2, col=2)
+        # figure.update_yaxes(title_text="Count", row=4, col=2)
     elif len(label_cols) == 3:
+        figure = make_subplots(rows=1, cols=3,subplot_titles=("Plot 1", "Plot 2", "Plot 3"))
         lab_trace1 = label_plot(df, label_col=label_cols[0][0], label_type=label_cols[0][1])
         lab_trace2 = label_plot(df, label_col=label_cols[1][0], label_type=label_cols[1][1])
         lab_trace3 = label_plot(df, label_col=label_cols[2][0], label_type=label_cols[2][1])
-        figure.append_trace(lab_trace1, 2, 2)
-        figure.append_trace(lab_trace2, 4, 2)
-        figure.append_trace(lab_trace3, 6, 2)
-        figure.update_yaxes(title_text="Count", row=2, col=2)
-        figure.update_yaxes(title_text="Count", row=4, col=2)
-        figure.update_yaxes(title_text="Count", row=6, col=2)
+        figure.append_trace(lab_trace1, 1, 1)
+        figure.append_trace(lab_trace2, 1, 2)
+        figure.append_trace(lab_trace3, 1, 3)
+        # figure.update_yaxes(title_text="Count", row=2, col=2)
+        # figure.update_yaxes(title_text="Count", row=4, col=2)
+        # figure.update_yaxes(title_text="Count", row=6, col=2)
     elif len(label_cols) == 4:
+        figure = make_subplots(rows=2, cols=2,subplot_titles=("Plot 1", "Plot 2", "Plot 3", "Plot 4"))
         lab_trace1 = label_plot(df, label_col=label_cols[0][0], label_type=label_cols[0][1])
         lab_trace2 = label_plot(df, label_col=label_cols[1][0], label_type=label_cols[1][1])
         lab_trace3 = label_plot(df, label_col=label_cols[2][0], label_type=label_cols[2][1])
         lab_trace4 = label_plot(df, label_col=label_cols[3][0], label_type=label_cols[3][1])
-        figure.append_trace(lab_trace1, 2, 2)
-        figure.append_trace(lab_trace2, 4, 2)
-        figure.append_trace(lab_trace3, 6, 2)
-        figure.append_trace(lab_trace4, 8, 2)
-        figure.update_yaxes(title_text="Count", row=2, col=2)
-        figure.update_yaxes(title_text="Count", row=4, col=2)
-        figure.update_yaxes(title_text="Count", row=6, col=2)
-        figure.update_yaxes(title_text="Count", row=8, col=2)
+        figure.append_trace(lab_trace1, 1, 1)
+        figure.append_trace(lab_trace2, 1, 2)
+        figure.append_trace(lab_trace3, 2, 1)
+        figure.append_trace(lab_trace4, 2, 2)
+        # figure.update_yaxes(title_text="Count", row=2, col=2)
+        # figure.update_yaxes(title_text="Count", row=4, col=2)
+        # figure.update_yaxes(title_text="Count", row=6, col=2)
+        # figure.update_yaxes(title_text="Count", row=8, col=2)
+    return figure
 
 
 def label_plot(df: pandas.DataFrame, label_col: str, label_type: str) -> plotly.graph_objects.Histogram:
@@ -379,7 +384,7 @@ def label_plot(df: pandas.DataFrame, label_col: str, label_type: str) -> plotly.
     return trace
 
 
-def generate_report(
+def do_analysis(
     df: pandas.DataFrame,
     out_dir: str,
     text_col: str,
@@ -497,6 +502,20 @@ def generate_report(
     x = np.log(freq_df["position"].values)
     y_emperical = np.log(freq_df['count'])
     y_theoritical = np.log(freq_df['predicted_proportion'] * n_tokens)
+
+
+
+    # fig_main = create_adjust_subplots(label_cols)
+    # logger.info("Generating distplots and word cloud for input text")
+    # generate_text_plots(fig_main, doc_lengths, word_frequencies, NNs, JJs, Vs)
+    # logger.info("Generating plots for labels")
+    # generate_label_plots(fig_main, df, label_cols)
+    # logger.info("Rendering plots")
+    # fig_main.update_layout(height=3100, showlegend=False)
+    # if save_report:
+    #     plotly.offline.plot(fig_main, filename=os.path.join(out_dir, "report.html"))
+    # else:
+    #     fig_main.show()
     
     return TextAnalysisResult(doc_lengths=doc_lengths,
                             zipf_x=x,
