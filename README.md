@@ -7,6 +7,20 @@
 
 Statistical NLP (SNLP) is a practical package with statistical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
+
+# Development
+
+```bash
+# Create and activate a virtual env
+python -m venv VENV
+source VENV/bin/activate
+# Install dependencies
+pip install -r requirements.txt
+# Run app
+python snlp/dashapp/index.py
+```
+
+
 # Features
 - [Text Analysis](#text-analysis)
 - [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
