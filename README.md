@@ -7,6 +7,20 @@
 
 Statistical NLP (SNLP) is a practical package with statistical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
 
+
+# Development
+
+```bash
+# Create and activate a virtual env
+python -m venv VENV
+source VENV/bin/activate
+# Install dependencies
+pip install -r requirements.txt
+# Run app
+python snlp/dashapp/index.py
+```
+
+
 # Features
 - [Text Analysis](#text-analysis)
 - [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
@@ -81,15 +95,15 @@ generate_report(df=imdb_train,
 
 The above yields a report in HTML, with interactive `plotly` plots as can be seen in example screenshots below. 
 
-![annotation1](/assets/annotation1.png)
+![annotation1](/figs/annotation1.png)
 
  You can easily zoom in any part of the plot to a have a closer look:
 
-![zoom](/assets/zoom.png)
+![zoom](/figs/zoom.png)
 
 You can get word clouds for different part of speech tags, as can be seen in the below example where word clouds for nouns, adjectives and verbs are rendered:
 
-![wc](/assets/wc.png)
+![wc](/figs/wc.png)
 
 ## **Extraction of Multiword Expressions**
 

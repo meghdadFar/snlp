@@ -83,8 +83,12 @@ class MWE(object):
             tests = self.df[self.text_col].sample(frac=0.8).tolist()
         num_pass = 0
         for t in tests:
-            if " ".join(word_tokenize(t)) == t:
-                num_pass += 1
+            try:
+                if " ".join(word_tokenize(t)) == t:
+                    num_pass += 1
+            except Exception as E:
+                logger.error(f'Could not tokenize and join tokens in {t}: \n {E} ')
+
         if float(num_pass) / float(len(tests)) < 0.8:
             logger.warning(
                 f"It seems that the content of {self.text_col} in the input data frame is not (fully) tokenized.\nThis can lead to poor results. Consider re-instantiating your MWE instance with 'tokenize' flag set to True.\nNote that this might lead to a slower instantiation."
