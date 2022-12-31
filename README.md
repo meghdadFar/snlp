@@ -5,7 +5,9 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 
 
-Statistical NLP (SNLP) is a practical package with statistical tools for natural language processing. SNLP is based on statistical and distributional attributes of natural language and hence most of its functionalities are unsupervised. 
+SNLP is a Python package for text analysis. It provides insights into the data so that informed design decisions can be made about and in the downstream ML applications. SNLP, moreover, provides a number of unsupervised models for Information Extraction and Preprocessing. It can, for instance, extract collocations or non-compositional compounds from text data, identify anomalies, and dynamically remove noise or redundant words from data. 
+
+SNLP is open-source and free. We, however, offer a paid Dashboard version of SNLP based on Plotly, for non-developers. See this page for more information about SNLP-dash.
 
 
 # Development
@@ -23,10 +25,13 @@ python snlp/dashapp/index.py
 
 # Features
 - [Text Analysis](#text-analysis)
-- [Extraction of Multiword Expressions](#extraction-of-multiword-expressions)
-- [Identification of Statistically Redundant Words](#identification-of-statistically-redundant-words)
+- Information Extraction
+  - [Extraction of Multiword Expressions (statistically idiomatic aka collocations)](#extraction-of-multiword-expressions)
+  - Extraction of Non-compositional Multiword Expressions (semantically idiomatic)
+  - Anomalies
 - [Text Cleaning](#text-cleaning)
-- [Auto Text Cleaning](#auto-text-cleaning)
+  - [Identification and filtering of Statistically Redundant Words](#identification-of-statistically-redundant-words)
+  - [Auto Text Cleaning](#auto-text-cleaning)
 
 ## Upcoming Features
 - **Identification of Non-compositional Expressions (e.g. *red tape* and *brain drain*)**. Non-compositional expressions have application in profanity detection, language understanding, and language generation.
